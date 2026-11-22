@@ -1,0 +1,33 @@
+// 오프라인에서도 앱이 열리도록 화면 파일을 저장해 두는 서비스 워커
+const VERSION = 'jipanil-v3';
+const SHELL = ['./', './index.html', './app.js', './config.js', './manifest.webmanifest',
+  './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
+
+self.addEventListener('install', e => {
+  e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+});
+self.addEventListener('activate', e => {
+  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k))))
+    .then(() => self.clients.claim()));
+});
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+  const url = new URL(req.url);
+  // Firebase 데이터 통신은 건드리지 않아요 (Firestore가 자체 오프라인 저장을 해요)
+  if (url.hostname.includes('googleapis.com') && !url.hostname.startsWith('fonts.')) return;
+  const sameOrigin = url.origin === self.location.origin;
+  const library = url.hostname === 'www.gstatic.com' || url.hostname.startsWith('fonts.');
+  if (!sameOrigin && !library) return;
+  if (sameOrigin) {
+    // 내 파일: 인터넷이 되면 새 버전, 안 되면 저장본
+    e.respondWith(fetch(req).then(res => {
+      const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); return res;
+    }).catch(() => caches.match(req).then(r => r || caches.match('./index.html'))));
+  } else {
+    // 글꼴·Firebase 라이브러리: 저장본 먼저
+    e.respondWith(caches.match(req).then(r => r || fetch(req).then(res => {
+      const copy = res.clone(); caches.open(VERSION).then(c => c.put(req, copy)); return res;
+    })));
+  }
+});
