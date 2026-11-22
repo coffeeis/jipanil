@@ -20,26 +20,27 @@ const ART = {
 };
 const AKEYS = Object.keys(ART);
 /* 점수로 입양하는 동물 친구들 (직접 그린 캐릭터) */
-const LION_MANE = [[52,34],[46.1,48.1],[32,54],[17.9,48.1],[12,34],[17.9,19.9],[32,14],[46.1,19.9]].map(([x,y]) => `<circle cx="${x}" cy="${y}" r="10"/>`).join('');
+const LION_MANE = [0, 45, 90, 135, 180, 225, 270, 315].map(d => { const r = d * Math.PI / 180; return `<circle cx="${(32 + 20 * Math.cos(r)).toFixed(1)}" cy="${(35 + 20 * Math.sin(r)).toFixed(1)}" r="10"/>`; }).join('');
+/* 기본 다섯 친구와 같은 그림체: 동그란 얼굴, 반짝이는 점 눈, 분홍 볼 */
 Object.assign(ART, {
-  pig: { name: '돼지', price: 30, c: '#ffd6df', cD: '#ec8aa3', svg:
-    `<path d="M10 12l13 7-10 9zM54 12l-13 7 10 9z" fill="#f59ab0"/><circle cx="32" cy="36" r="24" fill="#ffb8c8"/>${EYE(23, 31)}${EYE(41, 31)}<ellipse cx="32" cy="43" rx="10" ry="7" fill="#f590a8"/><ellipse cx="28.5" cy="43" rx="2" ry="3" fill="#b85a73"/><ellipse cx="35.5" cy="43" rx="2" ry="3" fill="#b85a73"/>${BLUSH(42)}` },
-  sheep: { name: '양', price: 30, c: '#efece6', cD: '#9a948a', svg:
-    `<g fill="#fffdf8" stroke="#e2ddd2" stroke-width="1.5"><circle cx="18" cy="20" r="9"/><circle cx="32" cy="15" r="10"/><circle cx="46" cy="20" r="9"/><circle cx="12" cy="34" r="8"/><circle cx="52" cy="34" r="8"/><circle cx="18" cy="48" r="8"/><circle cx="46" cy="48" r="8"/><circle cx="32" cy="52" r="8"/></g><ellipse cx="11" cy="31" rx="6" ry="3.5" fill="#d9c3ad"/><ellipse cx="53" cy="31" rx="6" ry="3.5" fill="#d9c3ad"/><ellipse cx="32" cy="36" rx="14" ry="15" fill="#f3e1cf"/>${EYE(26, 34)}${EYE(38, 34)}<path d="M29 42q3 2.5 6 0" stroke="#3b2f35" stroke-width="2" fill="none" stroke-linecap="round"/>${BLUSH(41)}` },
-  panda: { name: '판다', price: 50, c: '#e8e4e6', cD: '#4a4446', svg:
-    `<circle cx="14" cy="14" r="8" fill="#2f2a2c"/><circle cx="50" cy="14" r="8" fill="#2f2a2c"/><circle cx="32" cy="35" r="25" fill="#fff" stroke="#e6e0e2" stroke-width="1.5"/><ellipse cx="22" cy="33" rx="6" ry="8" transform="rotate(-25 22 33)" fill="#2f2a2c"/><ellipse cx="42" cy="33" rx="6" ry="8" transform="rotate(25 42 33)" fill="#2f2a2c"/><circle cx="23" cy="32" r="2.2" fill="#fff"/><circle cx="41" cy="32" r="2.2" fill="#fff"/><ellipse cx="32" cy="42" rx="3.5" ry="2.5" fill="#2f2a2c"/>${BLUSH(45)}` },
-  turtle: { name: '거북이', price: 50, c: '#d4efcf', cD: '#4f9c58', svg:
-    `<ellipse cx="32" cy="52" rx="27" ry="11" fill="#8b6a3e"/><path d="M12 50q20-10 40 0" stroke="#c9a46a" stroke-width="3" fill="none"/><circle cx="32" cy="31" r="20" fill="#8fd18a"/>${EYE(25, 29)}${EYE(39, 29)}<path d="M26 37q6 5 12 0" stroke="#3b2f35" stroke-width="2.4" fill="none" stroke-linecap="round"/>${BLUSH(36)}` },
-  owl: { name: '부엉이', price: 60, c: '#ead7bf', cD: '#a87447', svg:
-    `<path d="M10 9l12 11H9zM54 9L42 20h13z" fill="#8a5f3c"/><circle cx="32" cy="36" r="24" fill="#a87447"/><ellipse cx="32" cy="47" rx="14" ry="11" fill="#e9cfa8"/><circle cx="22" cy="30" r="9" fill="#fff"/><circle cx="42" cy="30" r="9" fill="#fff"/><circle cx="22" cy="31" r="4.5" fill="#3b2f35"/><circle cx="42" cy="31" r="4.5" fill="#3b2f35"/><circle cx="23.5" cy="29.5" r="1.4" fill="#fff"/><circle cx="43.5" cy="29.5" r="1.4" fill="#fff"/><path d="M28 38h8l-4 6z" fill="#f4a13a"/>` },
-  koala: { name: '코알라', price: 60, c: '#dfe3e7', cD: '#7d858d', svg:
-    `<circle cx="12" cy="22" r="11" fill="#9ea4ab"/><circle cx="52" cy="22" r="11" fill="#9ea4ab"/><circle cx="12" cy="22" r="6" fill="#f2c9d2"/><circle cx="52" cy="22" r="6" fill="#f2c9d2"/><circle cx="32" cy="36" r="22" fill="#b3b9bf"/>${EYE(23, 32)}${EYE(41, 32)}<ellipse cx="32" cy="41" rx="5" ry="7" fill="#3b3438"/>${BLUSH(45)}` },
-  octopus: { name: '문어', price: 80, c: '#ecd9f7', cD: '#a565c9', svg:
-    `<g stroke="#c58ae0" stroke-width="6" stroke-linecap="round" fill="none"><path d="M16 42q-6 8 0 15"/><path d="M26 46q-3 8 2 13"/><path d="M38 46q3 8-2 13"/><path d="M48 42q6 8 0 15"/></g><ellipse cx="32" cy="29" rx="21" ry="21" fill="#d39ef0"/>${EYE(25, 29)}${EYE(39, 29)}<path d="M29 37q3 3 6 0" stroke="#3b2f35" stroke-width="2.2" fill="none" stroke-linecap="round"/>${BLUSH(35)}` },
-  lion: { name: '사자', price: 100, c: '#fde3bf', cD: '#d9822b', svg:
-    `<g fill="#d9822b">${LION_MANE}</g><circle cx="32" cy="34" r="19" fill="#d9822b"/><circle cx="32" cy="35" r="16" fill="#f7c46c"/>${EYE(26, 32)}${EYE(38, 32)}<path d="M29 38h6l-3 3.5z" fill="#7a4a2a"/><path d="M28 43q4 3 8 0" stroke="#7a4a2a" stroke-width="2" fill="none" stroke-linecap="round"/>${BLUSH(40)}` },
-  unicorn: { name: '유니콘', price: 150, c: '#fbe3ef', cD: '#e783a8', svg:
-    `<ellipse cx="14" cy="34" rx="8" ry="16" fill="#f59ab3"/><ellipse cx="19" cy="22" rx="7" ry="9" fill="#9fd3f5"/><path d="M18 12l8 9-10 3zM46 12l-8 9 10 3z" fill="#fff" stroke="#efdfe6" stroke-width="1.5"/><path d="M32 2l5 17h-10z" fill="#f6c945"/><circle cx="32" cy="38" r="21" fill="#fff" stroke="#efdfe6" stroke-width="1.5"/><path d="M23 36q3-3 6 0M35 36q3-3 6 0" stroke="#3b2f35" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M28 45q4 3 8 0" stroke="#3b2f35" stroke-width="2" fill="none" stroke-linecap="round"/>${BLUSH(43)}` }
+  pig: { name: '돼지', price: 30, c: '#ffdbe4', cD: '#ef8fa8', svg:
+    `<path d="M12 18q2-11 12-8l-5 10zM52 18q-2-11-12-8l5 10z" fill="#ff9fba"/><circle cx="32" cy="36" r="24" fill="#ffb8cb"/>${EYE(23, 32)}${EYE(41, 32)}<ellipse cx="32" cy="42" rx="8" ry="5.5" fill="#ff98b4"/><circle cx="29" cy="42" r="1.6" fill="#c95f7c"/><circle cx="35" cy="42" r="1.6" fill="#c95f7c"/>${BLUSH(41)}` },
+  sheep: { name: '양', price: 30, c: '#f3eee6', cD: '#b3a79a', svg:
+    `<ellipse cx="9" cy="33" rx="7" ry="4" fill="#e3cbb2"/><ellipse cx="55" cy="33" rx="7" ry="4" fill="#e3cbb2"/><circle cx="32" cy="37" r="23" fill="#fff4e6"/><g fill="#ffffff"><circle cx="22" cy="16" r="8"/><circle cx="32" cy="12" r="9"/><circle cx="42" cy="16" r="8"/></g>${EYE(24, 36)}${EYE(40, 36)}<path d="M28.5 43q1.75 2 3.5 0q1.75 2 3.5 0" stroke="#3b2f35" stroke-width="2" fill="none" stroke-linecap="round"/>${BLUSH(43)}` },
+  panda: { name: '판다', price: 50, c: '#ecebef', cD: '#5b5560', svg:
+    `<circle cx="13" cy="16" r="8" fill="#3d3640"/><circle cx="51" cy="16" r="8" fill="#3d3640"/><circle cx="32" cy="36" r="24" fill="#ffffff"/><ellipse cx="23" cy="34" rx="6" ry="7" fill="#3d3640"/><ellipse cx="41" cy="34" rx="6" ry="7" fill="#3d3640"/><circle cx="23" cy="34" r="2.6" fill="#fff"/><circle cx="41" cy="34" r="2.6" fill="#fff"/><ellipse cx="32" cy="42" rx="3.2" ry="2.3" fill="#3d3640"/>${BLUSH(44)}` },
+  turtle: { name: '거북이', price: 50, c: '#d7f0d2', cD: '#5aa864', svg:
+    `<path d="M8 56a24 14 0 0 1 48 0z" fill="#b58a52"/><path d="M20 56l4-8h8l4 8M36 56l4-8h4" stroke="#d9b37a" stroke-width="2.5" fill="none"/><circle cx="32" cy="32" r="22" fill="#9ad89a"/>${EYE(24, 31)}${EYE(40, 31)}<path d="M28 39q4 3.5 8 0" stroke="#3b2f35" stroke-width="2.2" fill="none" stroke-linecap="round"/>${BLUSH(38)}` },
+  owl: { name: '부엉이', price: 60, c: '#f0dfc8', cD: '#b07d4f', svg:
+    `<path d="M12 18l4-12 9 9zM52 18l-4-12-9 9z" fill="#a8774b"/><circle cx="32" cy="36" r="24" fill="#c08f60"/><circle cx="23" cy="33" r="8.5" fill="#fff4e3"/><circle cx="41" cy="33" r="8.5" fill="#fff4e3"/>${EYE(23, 33)}${EYE(41, 33)}<path d="M29.5 39.5h5l-2.5 4z" fill="#f4a13a"/><ellipse cx="32" cy="52" rx="10" ry="5" fill="#e6c79f"/>${BLUSH(44)}` },
+  koala: { name: '코알라', price: 60, c: '#e3e6ea', cD: '#848d96', svg:
+    `<circle cx="12" cy="22" r="11" fill="#aab1b9"/><circle cx="52" cy="22" r="11" fill="#aab1b9"/><circle cx="12" cy="22" r="6" fill="#f6cbd5"/><circle cx="52" cy="22" r="6" fill="#f6cbd5"/><circle cx="32" cy="36" r="23" fill="#c1c7cd"/>${EYE(23, 33)}${EYE(41, 33)}<ellipse cx="32" cy="41" rx="4.5" ry="5.5" fill="#4a4248"/>${BLUSH(43)}` },
+  octopus: { name: '문어', price: 80, c: '#efdcf8', cD: '#a96ccc', svg:
+    `<g fill="#d39ef0"><ellipse cx="15" cy="53" rx="5" ry="7"/><ellipse cx="26" cy="56" rx="5" ry="7"/><ellipse cx="38" cy="56" rx="5" ry="7"/><ellipse cx="49" cy="53" rx="5" ry="7"/></g><circle cx="32" cy="32" r="23" fill="#ddb0f5"/>${EYE(24, 32)}${EYE(40, 32)}<ellipse cx="32" cy="40" rx="2.6" ry="2.2" fill="#a96ccc"/>${BLUSH(39)}` },
+  lion: { name: '사자', price: 100, c: '#ffe6c2', cD: '#e08a32', svg:
+    `<g fill="#f0a24c">${LION_MANE}</g><circle cx="32" cy="35" r="21" fill="#f0a24c"/><circle cx="32" cy="36" r="17" fill="#ffd683"/>${EYE(25, 33)}${EYE(39, 33)}<path d="M30 39.5h4q0 2.5-2 2.5t-2-2.5z" fill="#8a5530"/>${BLUSH(41)}` },
+  unicorn: { name: '유니콘', price: 150, c: '#fde6f0', cD: '#e787ad', svg:
+    `<path d="M14 22l2-11 8 7zM50 22l-2-11-8 7z" fill="#fff"/><path d="M32 2l4.5 15h-9z" fill="#ffd45e"/><circle cx="32" cy="37" r="23" fill="#ffffff"/><path d="M13 31q2-15 17-17q-4 7-2 14q-8-3-15 3z" fill="#ffb3cb"/><path d="M30 14q10-1 16 6q-7 0-11 4q-1-5-5-10z" fill="#a9d8f7"/><path d="M21 37q3-3 6 0M37 37q3-3 6 0" stroke="#3b2f35" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M29 44q3 2.5 6 0" stroke="#3b2f35" stroke-width="2" fill="none" stroke-linecap="round"/>${BLUSH(43)}` }
 });
 const SHOP = ['pig', 'sheep', 'panda', 'turtle', 'owl', 'koala', 'octopus', 'lion', 'unicorn'];
 
@@ -89,7 +90,7 @@ let sel = today, tab = 'todo', editing = null, draft = null, me = ls.get('hh-me'
 const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const mem = id => S.members.find(m => m.id === id);
 const art = m => ART[m && m.a] || ART.chick;
-function normalize(d) { d.done = d.done || {}; d.redeemed = d.redeemed || []; d.members = d.members || []; d.chores = d.chores || []; d.rewards = d.rewards || []; d.deals = d.deals || {}; d.games = d.games || {}; d.adopt = d.adopt || {}; return d; }
+function normalize(d) { d.done = d.done || {}; d.redeemed = d.redeemed || []; d.members = d.members || []; d.chores = d.chores || []; d.rewards = d.rewards || []; d.deals = d.deals || {}; d.games = d.games || {}; d.adopt = d.adopt || {}; d.buys = d.buys || {}; d.homes = d.homes || {}; return d; }
 /* 원래 순번대로 맡은 사람 */
 function baseWho(ch, k) { const ids = ch.who.filter(mem); if (!ids.length) return null; if (ch.mode === 'fixed') return ids[0];
   const i = (ch.mode === 'day' ? dayNum(k) : weekNum(k)) + (ch.off || 0); return ids[((i % ids.length) + ids.length) % ids.length]; }
@@ -108,7 +109,8 @@ const spent = id => S.redeemed.filter(r => r.m === id).reduce((a, r) => a + r.c,
 const gameNet = id => Object.values(S.games || {}).filter(g => g.m === id).reduce((s, g) => s + g.net, 0);
 const adoptSpent = id => Object.values(S.adopt || {}).filter(x => x.m === id).reduce((s, x) => s + x.cost, 0);
 const owns = (id, k) => AKEYS.includes(k) || Object.values(S.adopt || {}).some(x => x.m === id && x.a === k);
-const bal = id => earned(id) - spent(id) - adoptSpent(id) + gameNet(id);
+const buySpent = id => Object.values(S.buys || {}).filter(x => x.m === id).reduce((s, x) => s + x.cost, 0);
+const bal = id => earned(id) - spent(id) - adoptSpent(id) - buySpent(id) + gameNet(id);
 function toast(t) { const e = $('#toast'); e.textContent = t; e.classList.add('show'); clearTimeout(toastT); toastT = setTimeout(() => e.classList.remove('show'), 2200); }
 
 /* 변경: 화면에 바로 반영하고, 서버가 있으면 그 부분만 서버에 보내요(동시에 눌러도 서로 덮어쓰지 않게) */
@@ -196,13 +198,95 @@ function vPlay() {
     ${res}
   </div>`;
   const own = Object.values(S.adopt);
-  const pets = SHOP.map(k => { const A = ART[k], mine = mm && owns(me, k), owners = own.filter(x => x.a === k).map(x => nm(x.m));
-    return `<div class="pet" style="--c:${A.c}">${face(k)}<b>${A.name}</b><small>${A.price}점${owners.length ? ' · ' + owners.join(', ') : ''}</small>${mine ? `<button class="mini ghost" data-useava="${k}"${mm.a === k ? ' disabled' : ''}>${mm.a === k ? '대표 캐릭터' : '대표로 하기'}</button>` : `<button class="mini" data-adopt="${k}"${!mm || b < A.price ? ' disabled' : ''}>입양하기</button>`}</div>`; }).join('');
+  const pets = SHOP.map(k => { const A = ART[k], mine = mm && owns(me, k), owner = own.find(x => x.a === k), owners = owner ? [nm(owner.m) + '네 친구'] : [];
+    return `<div class="pet" style="--c:${A.c}">${face(k)}<b>${A.name}</b><small>${A.price}점${owners.length ? ' · ' + owners.join(', ') : ''}</small>${mine ? `<button class="mini ghost" data-useava="${k}"${mm.a === k ? ' disabled' : ''}>${mm.a === k ? '대표 캐릭터' : '대표로 하기'}</button>` : (owner ? `<button class="mini ghost" disabled>입양 완료</button>` : `<button class="mini" data-adopt="${k}"${!mm || b < A.price ? ' disabled' : ''}>입양하기</button>`)}</div>`; }).join('');
   return `<h2 style="margin-top:8px">행운 게임</h2>${gameBox}
   <p class="hint">점수로만 하는 놀이예요. 잃은 점수는 돌아오지 않고, 하루 ${DAILY}판까지 할 수 있어요.</p>
   ${log ? `<ul class="log">${log}</ul>` : ''}
-  <h2>동물 입양</h2><p class="hint">모은 점수로 새 친구를 데려오면 내 캐릭터로 쓸 수 있어요.</p>
+  <h2>동물 입양</h2><p class="hint">동물마다 한 마리뿐이라 먼저 입양한 사람의 친구가 돼요. 데려온 친구는 내 캐릭터로 쓰고 우리집에서 함께 살아요.</p>
   <div class="pets">${pets}</div>`;
+}
+
+
+/* ---------- 우리집: 동물 친구들이 사는 집 꾸미기 ---------- */
+const HOUSES = {
+  room: { name: '작은 방', price: 0, cap: 4 }, cottage: { name: '나무 오두막', price: 40, cap: 6 },
+  mushroom: { name: '버섯집', price: 80, cap: 8 }, twostory: { name: '2층집', price: 130, cap: 10 }, castle: { name: '작은 성', price: 250, cap: 14 }
+};
+const svgUrl = s => `url('data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'>${s}</svg>`).replace(/'/g, '%27')}')`;
+const WALLS = {
+  plain: { name: '크림', price: 0, bg: '#fdf6ef' }, mint: { name: '민트', price: 10, bg: '#dff3ea' },
+  stripe: { name: '분홍 줄무늬', price: 15, bg: 'repeating-linear-gradient(90deg,#fde4ea 0 16px,#fff6f8 16px 32px)' },
+  dots: { name: '물방울', price: 15, bg: 'radial-gradient(#f9c0cf 3px,transparent 3.5px) 0 0/22px 22px,#fff8fa' },
+  check: { name: '하늘 체크', price: 20, bg: 'repeating-conic-gradient(#e3f1ff 0 25%,#fff 0 50%) 0 0/28px 28px' },
+  heart: { name: '하트', price: 25, bg: `${svgUrl("<path d='M14 21s-7-4.5-7-9a3.8 3.8 0 0 1 7-2 3.8 3.8 0 0 1 7 2c0 4.5-7 9-7 9z' fill='#f7a8bd'/>")} 0 0/28px 28px,#fff3f6` },
+  star: { name: '별밤', price: 25, bg: `${svgUrl("<path d='M14 5l2.6 5.6 6 .7-4.5 4.1 1.2 6L14 18.4 8.7 21.4l1.2-6-4.5-4.1 6-.7z' fill='#ffe08a'/>")} 0 0/30px 30px,#3d4a7a` }
+};
+const FLOORS = {
+  wood: { name: '나무 바닥', price: 0, bg: 'repeating-linear-gradient(90deg,#dcab7a 0 38px,#cf9c6a 38px 40px)' },
+  carpet: { name: '분홍 카펫', price: 15, bg: '#f3d0da' }, tile: { name: '흰 타일', price: 15, bg: 'repeating-conic-gradient(#ececec 0 25%,#fff 0 50%) 0 0/30px 30px' },
+  grass: { name: '잔디', price: 20, bg: 'linear-gradient(#bfe6b5,#a3d89a)' }
+};
+const FURN = {
+  bed: { name: '침대', price: 30, w: 30, svg: `<rect x="6" y="30" width="52" height="18" rx="4" fill="#f4b6c8"/><rect x="6" y="20" width="14" height="28" rx="4" fill="#c98f6b"/><rect x="21" y="25" width="16" height="9" rx="4" fill="#fff"/><rect x="8" y="48" width="4" height="9" fill="#a06f4f"/><rect x="52" y="48" width="4" height="9" fill="#a06f4f"/>` },
+  sofa: { name: '소파', price: 25, w: 28, svg: `<rect x="6" y="22" width="52" height="22" rx="8" fill="#7cc0e8"/><rect x="2" y="30" width="12" height="20" rx="6" fill="#5aa9d8"/><rect x="50" y="30" width="12" height="20" rx="6" fill="#5aa9d8"/><rect x="12" y="38" width="40" height="12" rx="4" fill="#8fd0f2"/><rect x="10" y="50" width="4" height="7" fill="#3b6e8f"/><rect x="50" y="50" width="4" height="7" fill="#3b6e8f"/>` },
+  table: { name: '식탁', price: 20, w: 24, svg: `<rect x="6" y="26" width="52" height="7" rx="3" fill="#c98f6b"/><rect x="10" y="33" width="5" height="24" fill="#a06f4f"/><rect x="49" y="33" width="5" height="24" fill="#a06f4f"/><circle cx="24" cy="21" r="5" fill="#fff"/><rect x="36" y="15" width="8" height="11" rx="2" fill="#f06f93"/>` },
+  tv: { name: '텔레비전', price: 35, w: 24, svg: `<rect x="6" y="10" width="52" height="34" rx="4" fill="#3b2f35"/><rect x="10" y="14" width="44" height="26" rx="2" fill="#7cc0e8"/><rect x="28" y="44" width="8" height="6" fill="#5b4a52"/><rect x="18" y="50" width="28" height="5" rx="2" fill="#5b4a52"/>` },
+  shelf: { name: '책장', price: 25, w: 18, svg: `<rect x="12" y="4" width="40" height="56" rx="3" fill="#a87447"/><rect x="16" y="8" width="32" height="14" fill="#7a5233"/><rect x="16" y="26" width="32" height="14" fill="#7a5233"/><rect x="16" y="44" width="32" height="12" fill="#7a5233"/><rect x="18" y="10" width="5" height="12" fill="#f06f93"/><rect x="24" y="12" width="5" height="10" fill="#7cc0e8"/><rect x="30" y="10" width="5" height="12" fill="#ffd84a"/><rect x="20" y="28" width="5" height="12" fill="#6cc08b"/><rect x="26" y="30" width="5" height="10" fill="#c58ae0"/>` },
+  tank: { name: '어항', price: 30, w: 20, svg: `<rect x="8" y="14" width="48" height="34" rx="4" fill="#bfe6ff" stroke="#8fc9ec" stroke-width="2"/><ellipse cx="30" cy="30" rx="7" ry="4.5" fill="#ff9a3c"/><path d="M37 30l6-4v8z" fill="#ff9a3c"/><path d="M16 46c2-6 0-10 2-14M46 46c-2-5 0-9-1-12" stroke="#6cc08b" stroke-width="3" fill="none"/><rect x="8" y="48" width="48" height="9" fill="#a87447"/>` },
+  plant: { name: '화분', price: 10, w: 13, svg: `<path d="M32 36c-14-4-16-18-12-22 6 4 10 12 12 22zM32 36c14-4 16-18 12-22-6 4-10 12-12 22zM32 34c-2-12 0-22 0-26 4 6 4 16 0 26z" fill="#6cc08b"/><path d="M20 36h24l-4 22H24z" fill="#e08a5a"/>` },
+  lamp: { name: '스탠드', price: 15, w: 12, svg: `<path d="M22 8h20l6 18H16z" fill="#ffd84a"/><rect x="30" y="26" width="4" height="26" fill="#8a7a80"/><ellipse cx="32" cy="56" rx="12" ry="4" fill="#8a7a80"/>` },
+  cushion: { name: '쿠션', price: 8, w: 12, svg: `<rect x="12" y="26" width="40" height="28" rx="11" fill="#ffd84a"/><circle cx="32" cy="40" r="3" fill="#e8b923"/>` },
+  ball: { name: '공', price: 8, w: 9, svg: `<circle cx="32" cy="42" r="16" fill="#f06f93"/><path d="M16 42h32M32 26c-6 6-6 26 0 32" stroke="#fff" stroke-width="3" fill="none"/>` },
+  rug: { name: '러그', price: 15, w: 34, flat: true, svg: `<ellipse cx="32" cy="32" rx="30" ry="12" fill="#f59ab3"/><ellipse cx="32" cy="32" rx="22" ry="8" fill="#ffd9e2"/>` },
+  frame: { name: '그림 액자', price: 10, w: 14, wall: true, svg: `<rect x="8" y="10" width="48" height="40" rx="2" fill="#c98f6b"/><rect x="14" y="16" width="36" height="28" fill="#c8edc9"/><path d="M14 44l12-14 8 8 6-6 10 12z" fill="#6cc08b"/><circle cx="42" cy="24" r="4" fill="#ffd84a"/>` },
+  clock: { name: '벽시계', price: 12, w: 11, wall: true, svg: `<circle cx="32" cy="32" r="22" fill="#fff" stroke="#f06f93" stroke-width="5"/><path d="M32 32V18M32 32l9 6" stroke="#3b2f35" stroke-width="3" stroke-linecap="round"/>` },
+  window: { name: '창문', price: 20, w: 18, wall: true, svg: `<rect x="8" y="6" width="48" height="46" rx="4" fill="#fff"/><rect x="12" y="10" width="40" height="38" fill="#bfe6ff"/><path d="M32 10v38M12 29h40" stroke="#fff" stroke-width="3"/><circle cx="21" cy="19" r="4" fill="#fff"/>` }
+};
+const icon = s => `<svg viewBox="0 0 64 64" aria-hidden="true">${s}</svg>`;
+let viewHome = null, homeEdit = false, selItem = null, shopTab = 'furn', drag = null;
+const homeOf = id => Object.assign({ house: 'room', wall: 'plain', floor: 'wood', place: {} }, (S.homes || {})[id] || {});
+const myBuys = (id, kind) => Object.values(S.buys).filter(x => x.m === id && x.kind === kind);
+const hasBuy = (id, kind, k) => myBuys(id, kind).some(x => x.k === k);
+const petsOf = m => [...new Set([m.a, ...Object.values(S.adopt).filter(x => x.m === m.id).map(x => x.a)])].filter(k => ART[k]);
+function roomHtml(m) {
+  const h = homeOf(m.id), edit = homeEdit && m.id === me;
+  const furn = myBuys(m.id, 'item').filter(x => h.place[x.id] && FURN[x.k]);
+  const pets = petsOf(m);
+  const els = [
+    ...furn.map(x => ({ id: x.id, k: x.k, f: FURN[x.k], p: h.place[x.id] })),
+    ...pets.map((k, i) => ({ id: 'pet_' + k, pet: k, p: h.place['pet_' + k] || { x: 20 + (i * 17) % 64, y: 92 } }))
+  ].sort((p, q) => (p.f && p.f.flat ? -1 : 0) - (q.f && q.f.flat ? -1 : 0) || p.p.y - q.p.y);
+  return `<div class="house" data-h="${h.house}"><div class="roof"></div><div class="room${edit ? ' edit' : ''}" id="room">
+    <div class="wallp" style="background:${WALLS[h.wall].bg}"></div><div class="floorp" style="background:${FLOORS[h.floor].bg}"></div>
+    ${els.map(e => `<div class="it${e.f && e.f.flat ? ' flat' : ''}${selItem === e.id && edit ? ' sel' : ''}" data-it="${e.id}" style="left:${e.p.x}%;top:${e.p.y}%;width:${e.pet ? 16 : e.f.w}%">${e.pet ? face(e.pet) : icon(e.f.svg)}</div>`).join('')}
+  </div></div>`;
+}
+function vHome() {
+  const mm = mem(me);
+  if (!viewHome || !mem(viewHome)) viewHome = me || S.members[0].id;
+  const m = mem(viewHome), own = m.id === me, h = homeOf(m.id), cap = HOUSES[h.house].cap;
+  const placed = myBuys(m.id, 'item').filter(x => h.place[x.id]).length;
+  const tray = own ? myBuys(me, 'item').filter(x => !h.place[x.id] && FURN[x.k]) : [];
+  const switcher = `<div class="tg homes">${S.members.map(x => `<button data-vh="${x.id}" aria-pressed="${x.id === m.id}" style="--c:${art(x).c};--cD:${art(x).cD}">${face(x.a)}${esc(x.name)}네</button>`).join('')}</div>`;
+  const ctrl = own ? `<div class="acts homeacts"><button class="btn${homeEdit ? '' : ' ghost'}" data-hedit>${homeEdit ? '꾸미기 끝' : '꾸미기'}</button>${homeEdit && selItem ? `<button class="btn warn" data-unplace>${selItem.startsWith('pet_') ? '원래 자리로' : '넣어 두기'}</button>` : ''}<span class="capn">가구 ${placed} / ${cap}</span></div>
+    ${homeEdit ? `<p class="hint">가구와 동물을 끌어서 옮겨요. 눌러서 고른 다음 ‘넣어 두기’를 누르면 창고로 들어가요.</p>
+    <div class="tray">${tray.length ? tray.map(x => `<button data-place="${x.id}" title="${FURN[x.k].name}">${icon(FURN[x.k].svg)}<small>${FURN[x.k].name}</small></button>`).join('') : '<p class="none">창고가 비었어요. 아래 가게에서 가구를 사 보세요.</p>'}</div>` : ''}` : `<p class="hint">${esc(m.name)}네 집은 구경만 할 수 있어요. 꾸미기는 ${esc(m.name)}만 할 수 있어요.</p>`;
+  let shop = '';
+  if (own) {
+    const b = bal(me), btn = (kind, k, price, ownd, using, label) => ownd
+      ? `<button class="mini ghost" data-use="${kind}:${k}"${using ? ' disabled' : ''}>${using ? '사용 중' : label}</button>`
+      : `<button class="mini" data-buy="${kind}:${k}"${b < price ? ' disabled' : ''}>${price ? price + '점' : '무료'}</button>`;
+    const tabs = [['furn', '가구'], ['wall', '벽지'], ['floor', '바닥'], ['house', '집']];
+    let cards = '';
+    if (shopTab === 'furn') cards = Object.entries(FURN).map(([k, f]) => { const n = myBuys(me, 'item').filter(x => x.k === k).length;
+      return `<div class="good">${icon(f.svg)}<b>${f.name}</b><small>${f.wall ? '벽에 거는 가구' : '바닥 가구'}${n ? ` · ${n}개 있음` : ''}</small><button class="mini" data-buy="item:${k}"${b < f.price ? ' disabled' : ''}>${f.price}점</button></div>`; }).join('');
+    if (shopTab === 'wall') cards = Object.entries(WALLS).map(([k, w]) => `<div class="good"><span class="sw" style="background:${w.bg}"></span><b>${w.name}</b><small>벽지</small>${btn('wall', k, w.price, !w.price || hasBuy(me, 'wall', k), h.wall === k, '바르기')}</div>`).join('');
+    if (shopTab === 'floor') cards = Object.entries(FLOORS).map(([k, f]) => `<div class="good"><span class="sw" style="background:${f.bg}"></span><b>${f.name}</b><small>바닥</small>${btn('floor', k, f.price, !f.price || hasBuy(me, 'floor', k), h.floor === k, '깔기')}</div>`).join('');
+    if (shopTab === 'house') cards = Object.entries(HOUSES).map(([k, x]) => `<div class="good"><span class="hsw" data-h="${k}"><i></i></span><b>${x.name}</b><small>가구 ${x.cap}개까지</small>${btn('house', k, x.price, !x.price || hasBuy(me, 'house', k), h.house === k, '이사하기')}</div>`).join('');
+    shop = `<h2>가게</h2><p class="hint">${esc(mm.name)}의 점수 ${b}점</p><div class="tg shoptabs">${tabs.map(([v, t]) => `<button data-stab="${v}" aria-pressed="${shopTab === v}">${t}</button>`).join('')}</div><div class="goods">${cards}</div>`;
+  }
+  return `<h2 style="margin-top:8px">${esc(m.name)}네 집 · ${HOUSES[h.house].name}</h2>${switcher}${roomHtml(m)}${ctrl}${!me ? '<p class="hint">위에서 ‘나는 누구?’를 고르면 내 집을 꾸밀 수 있어요.</p>' : ''}${shop}`;
 }
 
 /* ---------- 화면: 관리 ---------- */
@@ -220,7 +304,7 @@ function vManage() {
   const sum = c => { const days = c.days.length === 7 ? '매일' : [...c.days].sort().map(i => DN[i]).join('·'); const ms = c.who.map(mem).filter(Boolean);
     return days + ' · ' + (c.mode === 'fixed' ? (ms[0] ? esc(ms[0].name) : '먼저 하는 사람') : (c.mode === 'day' ? '날마다' : '주마다') + ' 순번') + ' · ' + c.pts + '점'; };
   const code = ls.get('hh-family');
-  return `<h2 style="margin-top:8px">가족과 캐릭터</h2>${S.members.map(m => `<div class="mrow"><input type="text" data-name="${m.id}" value="${esc(m.name)}" maxlength="10" aria-label="${esc(m.name)} 이름"><div class="pick">${[...AKEYS, ...SHOP.filter(k => owns(m.id, k))].map(k => `<button data-ava="${m.id}:${k}" aria-pressed="${m.a === k}" aria-label="${ART[k].name}">${face(k)}</button>`).join('')}</div></div>`).join('')}
+  return `<h2 style="margin-top:8px">가족과 캐릭터</h2><p class="hint">이름과 캐릭터는 자기 것만 바꿀 수 있어요.</p>${S.members.map(m => m.id === me ? `<div class="mrow"><input type="text" data-name="${m.id}" value="${esc(m.name)}" maxlength="10" aria-label="내 이름"><div class="pick">${[...AKEYS, ...SHOP.filter(k => owns(m.id, k))].map(k => `<button data-ava="${m.id}:${k}" aria-pressed="${m.a === k}" aria-label="${ART[k].name}">${face(k)}</button>`).join('')}</div><button class="btn ghost" data-repin>비밀번호 바꾸기</button></div>` : `<div class="mrow other"><span class="av" style="--c:${art(m).c}">${face(m.a)}</span><b>${esc(m.name)}</b></div>`).join('')}
   <h2>집안일</h2>${S.chores.map(c => editing === c.id ? choreForm() : `<div class="crow"><span class="cn">${esc(c.name)}<small>${sum(c)}</small></span><span class="dots">${c.who.map(mem).filter(Boolean).map(m => face(m.a)).join('')}</span><button class="btn ghost" data-edit="${c.id}">편집</button></div>`).join('')}
   ${editing === 'new' ? choreForm() : '<p><button class="btn" data-add>+ 집안일 추가</button></p>'}
   <h2>보상</h2><div class="rows">${S.rewards.map(r => `<div class="rw"><span class="cn">${esc(r.name)}<small>${r.cost}점</small></span><button class="btn warn" data-rdel="${r.id}">삭제</button></div>`).join('')}</div>
@@ -232,23 +316,55 @@ function vManage() {
 function render() {
   if (!S) return;
   const f = document.activeElement;
-  if (f && f.matches && f.matches('#view input')) { pending = true; return; } // 입력 중엔 화면을 바꾸지 않아요
+  if ((f && f.matches && f.matches('#view input')) || drag) { pending = true; return; } // 입력 중엔 화면을 바꾸지 않아요
   pending = false;
   const now = keyOf(new Date()); if (now !== today) { if (sel === today) sel = now; today = now; }
   $('#date').textContent = label(today);
   $('#peek').innerHTML = S.members.slice(0, 5).map(m => face(m.a)).join('');
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', b.dataset.t === tab ? 'page' : 'false'));
   $('#me').innerHTML = S.members.map(m => `<button class="chip" data-me="${m.id}" style="--c:${art(m).c}" aria-pressed="${m.id === me}">${face(m.a)}${esc(m.name)}</button>`).join('');
-  $('#view').innerHTML = tab === 'score' ? vScore() : tab === 'manage' ? vManage() : tab === 'play' ? vPlay() : vTodo();
+  $('#view').innerHTML = tab === 'score' ? vScore() : tab === 'manage' ? vManage() : tab === 'play' ? vPlay() : tab === 'home' ? vHome() : vTodo();
 }
 document.addEventListener('focusout', () => setTimeout(() => { if (pending) render(); }, 0));
-function route() { const h = location.hash.slice(1); tab = ['todo', 'score', 'play', 'manage'].includes(h) ? h : 'todo'; render(); scrollTo(0, 0); }
+function route() { const h = location.hash.slice(1); tab = ['todo', 'score', 'play', 'home', 'manage'].includes(h) ? h : 'todo'; render(); scrollTo(0, 0); }
+
+
+/* ---------- 나는 누구? : 4자리 비밀번호로 본인 확인 ---------- */
+async function pinHash(id, pin) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode((ls.get('hh-family') || 'local') + ':' + id + ':' + pin));
+  return [...new Uint8Array(buf)].map(x => x.toString(16).padStart(2, '0')).join('');
+}
+const okList = () => { try { return JSON.parse(ls.get('hh-ok') || '[]'); } catch (e) { return []; } };
+const setOk = id => { const l = okList(); if (!l.includes(id)) l.push(id); ls.set('hh-ok', JSON.stringify(l)); };
+let pinFor = null, pinMode = 'enter';
+function openPin(id, mode) {
+  const m = mem(id); pinFor = id; pinMode = mode || (m.pin ? 'enter' : 'set');
+  $('#pinFace').innerHTML = face(m.a);
+  $('#pinTitle').textContent = pinMode === 'set' ? `${m.name}의 비밀번호 정하기` : `${m.name} 맞나요?`;
+  $('#pinSub').textContent = pinMode === 'set' ? '숫자 4자리를 정해 주세요. 이 번호를 아는 사람만 이 이름으로 체크하고 꾸밀 수 있어요.' : '비밀번호 4자리를 넣어 주세요.';
+  $('#pinMsg').textContent = ''; $('#pinIn').value = ''; $('#pin').hidden = false; setTimeout(() => $('#pinIn').focus(), 50);
+}
+async function submitPin() {
+  const v = $('#pinIn').value.trim(), m = mem(pinFor);
+  if (!/^\d{4}$/.test(v)) { $('#pinMsg').textContent = '숫자 4자리를 넣어 주세요.'; return; }
+  const h = await pinHash(pinFor, v);
+  if (pinMode === 'enter' && h !== m.pin) { $('#pinMsg').textContent = '번호가 달라요. 다시 넣어 주세요.'; $('#pinIn').value = ''; return; }
+  $('#pin').hidden = true; $('#pinIn').blur(); setOk(pinFor); me = pinFor; ls.set('hh-me', me);
+  if (pinMode === 'set') { change(() => { m.pin = h; }, () => [{ members: S.members }]); toast('비밀번호를 정했어요'); }
+  else { render(); toast(`${m.name}로 들어왔어요`); }
+}
+$('#pinOk').addEventListener('click', submitPin);
+$('#pinNo').addEventListener('click', () => { $('#pin').hidden = true; });
+$('#pinIn').addEventListener('keydown', e => { if (e.key === 'Enter') submitPin(); });
 
 /* ---------- 누르기 ---------- */
 document.addEventListener('click', e => {
   const b = e.target.closest('button'); if (!b || !S) return; const d = b.dataset;
   if (d.t) { if (location.hash.slice(1) !== d.t) location.hash = d.t; else route(); return; }
-  if (d.me) { me = me === d.me ? null : d.me; ls.set('hh-me', me); render(); return; }
+  if (d.me) { if (me === d.me) { me = null; ls.set('hh-me', null); render(); return; }
+    if (okList().includes(d.me) && mem(d.me).pin) { me = d.me; ls.set('hh-me', me); render(); return; }
+    openPin(d.me); return; }
+  if ('repin' in d) { if (me) openPin(me, 'set'); return; }
   if (d.day) { sel = d.day; render(); return; }
   if (d.wk) { sel = addDays(sel, +d.wk); render(); return; }
   if (d.do) {
@@ -269,6 +385,28 @@ document.addEventListener('click', e => {
     toast(ds === 'done' ? `+${c.pts}점 · 용돈 ${won(dl.amt)} 받아요` : `${mem(m).name} +${c.pts}점!`); return;
   }
 
+
+  if (d.vh) { viewHome = d.vh; homeEdit = false; selItem = null; render(); return; }
+  if ('hedit' in d) { if (viewHome !== me) return; homeEdit = !homeEdit; selItem = null; render(); return; }
+  if (d.stab) { shopTab = d.stab; render(); return; }
+  if (d.buy) {
+    const [kind, k] = d.buy.split(':'), cat = { item: FURN, wall: WALLS, floor: FLOORS, house: HOUSES }[kind][k];
+    if (!me || bal(me) < cat.price) return;
+    if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = '살까요?'; return; }
+    const x = { id: 'b' + Date.now(), m: me, kind, k, cost: cat.price, t: Date.now() };
+    const apply = kind === 'item' ? null : kind;
+    change(() => { S.buys[x.id] = x; if (apply) { S.homes[me] = homeOf(me); S.homes[me][apply] = k; } },
+      R => [new R.FieldPath('buys', x.id), x, ...(apply ? [new R.FieldPath('homes', me, apply), k] : [])]);
+    toast(kind === 'item' ? `${cat.name}를 샀어요. ‘꾸미기’에서 놓아 보세요` : `${cat.name}로 바꿨어요`); return;
+  }
+  if (d.use) { const [kind, k] = d.use.split(':'); if (!me) return;
+    change(() => { S.homes[me] = homeOf(me); S.homes[me][kind] = k; }, R => [new R.FieldPath('homes', me, kind), k]); return; }
+  if (d.place) { const id = d.place, x = S.buys[id]; if (!x || x.m !== me) return; const h = homeOf(me);
+    const n = myBuys(me, 'item').filter(y => h.place[y.id]).length; if (n >= HOUSES[h.house].cap) { toast('집이 꽉 찼어요. 더 큰 집으로 이사해 보세요'); return; }
+    const p = { x: 50, y: FURN[x.k].wall ? 38 : 80 };
+    change(() => { S.homes[me] = h; h.place[id] = p; }, R => [new R.FieldPath('homes', me, 'place', id), p]); selItem = id; return; }
+  if ('unplace' in d) { const id = selItem; if (!id) return; selItem = null;
+    change(() => { const h = homeOf(me); delete h.place[id]; S.homes[me] = h; }, R => [new R.FieldPath('homes', me, 'place', id), R.deleteField()]); return; }
   if (d.game) { game = d.game; last = null; render(); return; }
   if (d.cpick) { coinPick = d.cpick; render(); return; }
   if (d.dpick) { dicePick = +d.dpick; render(); return; }
@@ -288,11 +426,9 @@ document.addEventListener('click', e => {
     return;
   }
   if (d.adopt) {
-    const k = d.adopt, A = ART[k]; if (!me || bal(me) < A.price || owns(me, k)) return;
+    const k = d.adopt, A = ART[k]; if (!me || bal(me) < A.price || Object.values(S.adopt).some(x => x.a === k)) return;
     if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = `${A.price}점 쓸까요?`; return; }
-    const x = { id: 'a' + Date.now(), m: me, a: k, cost: A.price, t: Date.now() };
-    change(() => { S.adopt[x.id] = x; }, R => [new R.FieldPath('adopt', x.id), x]);
-    toast(`${A.name}를 입양했어요!`); return;
+    adoptAnimal(k); return;
   }
   if (d.useava) { const k = d.useava; if (!me || !owns(me, k)) return; change(() => { mem(me).a = k; }, () => [{ members: S.members }]); toast('대표 캐릭터를 바꿨어요'); return; }
   if (d.offer) { offerKey = d.offer; offerAmt = 3000; render(); return; }
@@ -311,13 +447,13 @@ document.addEventListener('click', e => {
   if (d.xcancel) { const id = d.xcancel; change(() => { S.deals[id].st = 'cancel'; }, R => [new R.FieldPath('deals', id, 'st'), 'cancel']); toast('부탁을 취소했어요'); return; }
   if (d.xdrop) { const id = d.xdrop; change(() => { S.deals[id].st = 'open'; S.deals[id].to = null; }, R => [new R.FieldPath('deals', id, 'st'), 'open', new R.FieldPath('deals', id, 'to'), null]); toast('다시 다른 가족을 기다려요'); return; }
   if (d.paid) { const id = d.paid, t = Date.now(); change(() => { S.deals[id].st = 'paid'; S.deals[id].pt = t; }, R => [new R.FieldPath('deals', id, 'st'), 'paid', new R.FieldPath('deals', id, 'pt'), t]); toast('정산했어요'); return; }
-  if (d.unpaid) { const id = d.unpaid; change(() => { S.deals[id].st = 'done'; }, R => [new R.FieldPath('deals', id, 'st'), 'done']); return; }
+  if (d.unpaid) { const id = d.unpaid; if (me !== S.deals[id].from && me !== S.deals[id].to) { toast('주고받은 두 사람만 되돌릴 수 있어요'); return; } change(() => { S.deals[id].st = 'done'; }, R => [new R.FieldPath('deals', id, 'st'), 'done']); return; }
   if (d.redeem) { const r = S.rewards.find(x => x.id === d.redeem); if (!me || bal(me) < r.cost) return;
     const x = { id: 'x' + Date.now(), m: me, r: r.name, c: r.cost, d: today };
     change(() => S.redeemed.push(x), R => [{ redeemed: R.arrayUnion(x) }]); toast(`‘${r.name}’ 획득!`); return; }
-  if (d.undor) { const x = S.redeemed.find(r => r.id === d.undor); if (!x) return;
+  if (d.undor) { const x = S.redeemed.find(r => r.id === d.undor); if (!x) return; if (x.m !== me) { toast('바꾼 사람만 취소할 수 있어요'); return; }
     change(() => { S.redeemed = S.redeemed.filter(r => r !== x); }, R => [{ redeemed: R.arrayRemove(x) }]); toast('취소하고 점수를 돌려줬어요'); return; }
-  if (d.ava) { const [id, a] = d.ava.split(':'); change(() => { mem(id).a = a; }, () => [{ members: S.members }]); return; }
+  if (d.ava) { const [id, a] = d.ava.split(':'); if (id !== me) { toast('자기 캐릭터만 바꿀 수 있어요'); return; } change(() => { mem(id).a = a; }, () => [{ members: S.members }]); return; }
   if (d.edit) { editing = d.edit; draft = clone(S.chores.find(c => c.id === d.edit)); render(); return; }
   if ('add' in d) { editing = 'new'; draft = { id: 'c' + Date.now(), name: '', pts: 2, days: [...EV], mode: 'fixed', who: [] }; render(); return; }
   if (d.dday) { const i = +d.dday; draft.days = draft.days.includes(i) ? draft.days.filter(x => x !== i) : [...draft.days, i]; render(); return; }
@@ -343,6 +479,21 @@ document.addEventListener('click', e => {
   if ('leave' in d) { if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = '한 번 더 누르면 나가기'; return; }
     ls.set('hh-family', null); ls.set('hh-cache', null); location.hash = ''; location.reload(); return; }
 });
+
+/* 입양: 동물마다 한 마리, 동시에 눌러도 먼저 누른 사람만 */
+async function adoptAnimal(k) {
+  const A = ART[k], x = { id: 'a' + Date.now(), m: me, a: k, cost: A.price, t: Date.now() };
+  if (R) {
+    try {
+      await R.runTransaction(R.db, async tx => {
+        const s = await tx.get(R.ref), cur = (s.data() || {}).adopt || {};
+        if (Object.values(cur).some(y => y.a === k)) throw new Error('taken');
+        tx.update(R.ref, new R.FieldPath('adopt', x.id), x);
+      });
+    } catch (e) { toast(e.message === 'taken' ? '앗, 다른 가족이 먼저 입양했어요' : '입양하지 못했어요. 인터넷 연결을 확인해 주세요'); return; }
+  }
+  S.adopt[x.id] = x; ls.set('hh-cache', JSON.stringify(S)); render(); toast(`${A.name}를 입양했어요!`);
+}
 /* 맡기: 두 사람이 동시에 눌러도 한 사람만 맡도록 서버에서 확인해요 */
 async function takeDeal(id) {
   const x = S.deals[id]; if (!x || x.st !== 'open') return;
@@ -360,13 +511,35 @@ async function takeDeal(id) {
   toast(`맡았어요! 끝내면 용돈 ${won(x.amt)}`);
 }
 document.addEventListener('input', e => { if (e.target.id === 'oa') offerAmt = e.target.value; if (e.target.id === 'ba') betAmt = e.target.value; if (!draft) return; if (e.target.id === 'dn') draft.name = e.target.value; if (e.target.id === 'dp') draft.pts = e.target.value; });
-document.addEventListener('change', e => { const id = e.target.dataset && e.target.dataset.name; if (!id) return; const v = e.target.value.trim().slice(0, 10);
+document.addEventListener('change', e => { const id = e.target.dataset && e.target.dataset.name; if (!id) return; if (id !== me) { e.target.value = mem(id).name; return; } const v = e.target.value.trim().slice(0, 10);
   if (!v) { e.target.value = mem(id).name; return; } e.target.blur(); change(() => { mem(id).name = v; }, () => [{ members: S.members }]); });
+
+/* 가구 끌어서 옮기기 (내 집, 꾸미기 중일 때만) */
+document.addEventListener('pointerdown', e => {
+  const el = e.target.closest('.room.edit .it'); if (!el) return;
+  const room = $('#room').getBoundingClientRect();
+  drag = { el, id: el.dataset.it, room, sx: e.clientX, sy: e.clientY, moved: false };
+  el.setPointerCapture(e.pointerId); e.preventDefault();
+});
+document.addEventListener('pointermove', e => {
+  if (!drag) return;
+  if (Math.abs(e.clientX - drag.sx) + Math.abs(e.clientY - drag.sy) > 6) drag.moved = true;
+  if (!drag.moved) return;
+  const x = Math.max(4, Math.min(96, (e.clientX - drag.room.left) / drag.room.width * 100));
+  const y = Math.max(12, Math.min(99, (e.clientY - drag.room.top) / drag.room.height * 100));
+  drag.el.style.left = x + '%'; drag.el.style.top = y + '%'; drag.x = x; drag.y = y;
+});
+document.addEventListener('pointerup', () => {
+  if (!drag) return; const g = drag; drag = null;
+  if (!g.moved) { selItem = selItem === g.id ? null : g.id; render(); return; }
+  const p = { x: Math.round(g.x * 10) / 10, y: Math.round(g.y * 10) / 10 }; selItem = g.id;
+  change(() => { const h = homeOf(me); h.place[g.id] = p; S.homes[me] = h; }, R => [new R.FieldPath('homes', me, 'place', g.id), p]);
+});
 window.addEventListener('hashchange', route);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) render(); });
 
 /* ---------- 시작 ---------- */
-function startApp(note) { $('#setup').hidden = true; $('#app').hidden = false; $('#sync').textContent = note; if (!mem(me)) me = null; route(); }
+function startApp(note) { $('#setup').hidden = true; $('#app').hidden = false; $('#sync').textContent = note; if (!mem(me) || !okList().includes(me) || !mem(me).pin) me = null; route(); }
 
 async function connect(code) {
   const [{ initializeApp }, { getAuth, signInAnonymously }, F] = await Promise.all([

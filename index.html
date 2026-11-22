@@ -40,7 +40,7 @@ h3{font:400 21px/1.1 Jua,sans-serif;margin:0;flex:1}
 .chip svg{width:36px;height:36px}
 .chip[aria-pressed=true]{border-color:var(--ink);background:var(--c)}
 nav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);padding:10px max(4vw,16px)}
-nav .wrap{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;background:var(--soft);border-radius:18px;padding:5px}
+nav .wrap{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;background:var(--soft);border-radius:18px;padding:5px}
 nav button{min-height:46px;border:0;border-radius:14px;background:transparent;font:400 18px Jua,sans-serif;color:var(--mut)}
 nav button[aria-current=page]{background:var(--card);color:var(--ink);box-shadow:0 2px 0 var(--line)}
 main{padding:8px max(4vw,16px) 72px}
@@ -144,6 +144,41 @@ input[type=text],input[type=number]{width:100%;min-height:50px;font-size:17px;pa
 .pets{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
 .pet{display:grid;justify-items:center;gap:4px;text-align:center;padding:14px 10px;border-radius:24px;background:var(--c);color:#3b2f35}
 .pet svg{width:72px;height:72px}.pet b{font:400 19px Jua,sans-serif;font-weight:400}.pet small{font-size:13px;color:#6d5a61;min-height:2.6em}
+nav button{font-size:16px;padding:0 2px}
+.modal{position:fixed;inset:0;z-index:20;background:rgba(40,25,32,.45);display:grid;place-items:center;padding:20px}
+.sheet{width:min(100%,360px);background:var(--card);border-radius:28px;padding:22px;text-align:center}
+.sheet h3{margin:6px 0 4px}.sheet p{color:var(--mut);font-size:15px;margin:4px 0}.pinface svg{width:64px;height:64px}
+#pinIn{width:100%;min-height:56px;font:400 30px Jua,sans-serif;letter-spacing:.5em;text-align:center;border:2px solid var(--line);border-radius:16px;background:var(--card);margin:10px 0 2px}
+#pinMsg{color:var(--acc)!important;min-height:1.4em}.sheet .acts{justify-content:center}
+.mrow.other{gap:10px}.mrow.other .av{width:40px;height:40px}.mrow.other .av svg{width:36px;height:36px}
+.homes button{display:flex;align-items:center;gap:4px;padding:0 12px 0 4px}.homes svg{width:34px;height:34px}
+.house{--frame:#e9cdb4;position:relative;margin:14px auto 0;max-width:560px}
+.roof{display:none;margin:0 -3%;height:64px}
+.house[data-h=cottage]{--frame:#b77b4a}.house[data-h=cottage] .roof{display:block;background:#9c5f33;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.house[data-h=mushroom]{--frame:#f3e3c8}.house[data-h=mushroom] .roof{display:block;height:84px;background:radial-gradient(circle at 28% 55%,#fff 9px,transparent 10px),radial-gradient(circle at 62% 38%,#fff 12px,transparent 13px),radial-gradient(circle at 80% 70%,#fff 7px,transparent 8px),#e8453c;border-radius:50% 50% 14px 14px/100% 100% 14px 14px}
+.house[data-h=twostory]{--frame:#d9e6f7}.house[data-h=twostory] .roof{display:block;height:72px;background:linear-gradient(90deg,transparent 72%,#8a5f3c 72% 80%,transparent 80%) 0 0/100% 40% no-repeat,#4f7fc4;clip-path:polygon(50% 0,72% 0,72% 20%,80% 20%,80% 34%,100% 100%,0 100%)}
+.house[data-h=castle]{--frame:#b9b3b8}.house[data-h=castle] .roof{display:block;height:58px;background:#a49da2;clip-path:polygon(0 100%,0 30%,10% 30%,10% 0,20% 0,20% 30%,30% 30%,30% 0,40% 0,40% 30%,60% 30%,60% 0,70% 0,70% 30%,80% 30%,80% 0,90% 0,90% 30%,100% 30%,100% 100%)}
+.room{position:relative;aspect-ratio:4/3;overflow:hidden;border:7px solid var(--frame);border-radius:0 0 22px 22px;touch-action:pan-y}
+.house[data-h=room] .room{border-radius:22px}
+.wallp{position:absolute;inset:0 0 36% 0}.floorp{position:absolute;inset:64% 0 0 0;box-shadow:inset 0 6px 0 rgba(0,0,0,.06)}
+.it{position:absolute;transform:translate(-50%,-100%);aspect-ratio:1;user-select:none}.it svg{width:100%;height:100%;display:block}
+.it.flat{transform:translate(-50%,-60%)}
+.room.edit .it{cursor:grab;touch-action:none}.room.edit .it.sel{outline:3px dashed var(--acc);outline-offset:2px;border-radius:10px}
+.homeacts{margin-top:12px;align-items:center}.capn{margin-left:auto;font:400 15px Jua,sans-serif;color:var(--mut)}
+.tray{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px}
+.tray button{flex:none;width:78px;border:2px dashed var(--line);border-radius:16px;background:var(--card);padding:6px;display:grid;justify-items:center}
+.tray svg{width:46px;height:46px}.tray small{font-size:12px}
+.shoptabs{margin-bottom:12px}
+.goods{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.good{display:grid;justify-items:center;gap:4px;text-align:center;padding:12px 8px;border-radius:20px;background:var(--card);box-shadow:0 3px 0 var(--line)}
+.good svg{width:58px;height:58px}.good b{font:400 17px Jua,sans-serif;font-weight:400}.good small{font-size:12px;color:var(--mut)}
+.sw{width:58px;height:58px;border-radius:14px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.06)}
+.hsw{width:64px;height:58px;display:grid;align-content:end}.hsw i{display:block;height:28px;background:#f3e3c8;border-radius:0 0 8px 8px}
+.hsw::before{content:"";height:26px;display:block}
+.hsw[data-h=cottage]::before{background:#9c5f33;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.hsw[data-h=mushroom]::before{background:radial-gradient(circle at 40% 55%,#fff 4px,transparent 5px),#e8453c;border-radius:50% 50% 4px 4px/100% 100% 4px 4px}
+.hsw[data-h=twostory]::before{background:#4f7fc4;clip-path:polygon(50% 0,100% 100%,0 100%)}.hsw[data-h=twostory] i{height:34px;background:#d9e6f7}
+.hsw[data-h=castle]::before{background:#a49da2;clip-path:polygon(0 100%,0 30%,20% 30%,20% 0,40% 0,40% 30%,60% 30%,60% 0,80% 0,80% 30%,100% 30%,100% 100%)}.hsw[data-h=castle] i{background:#b9b3b8}
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,40px);opacity:0;background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:999px;font:400 17px Jua,sans-serif;transition:.25s;pointer-events:none;max-width:92vw;text-align:center;z-index:9}
 #toast.show{transform:translate(-50%,0);opacity:1}
 #sync{font-size:14px;color:var(--mut);margin-top:28px;text-align:center}
@@ -181,10 +216,17 @@ input[type=text],input[type=number]{width:100%;min-height:50px;font-size:17px;pa
     <button data-t="todo">할 일</button>
     <button data-t="score">점수</button>
     <button data-t="play">놀이</button>
+    <button data-t="home">우리집</button>
     <button data-t="manage">관리</button>
   </div></nav>
   <main><div class="wrap"><div id="view"></div><p id="sync"></p></div></main>
 </div>
+<div id="pin" class="modal" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+  <div id="pinFace" class="pinface"></div><h3 id="pinTitle"></h3><p id="pinSub"></p>
+  <input type="password" id="pinIn" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="비밀번호 4자리">
+  <p id="pinMsg" role="status"></p>
+  <div class="acts"><button class="btn" id="pinOk">확인</button><button class="btn ghost" id="pinNo">취소</button></div>
+</div></div>
 <div id="toast" role="status"></div>
 <script type="module" src="app.js"></script>
 </body>
