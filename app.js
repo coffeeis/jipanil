@@ -44,7 +44,8 @@ Object.assign(ART, {
 });
 const SHOP = ['pig', 'sheep', 'panda', 'turtle', 'owl', 'koala', 'octopus', 'lion', 'unicorn'];
 
-const face = a => `<svg viewBox="0 0 64 64" aria-hidden="true">${(ART[a] || ART.chick).svg}</svg>`;
+const accSvg = (mid, a) => { const w = typeof S !== 'undefined' && S && S.wear && S.wear[mid] && S.wear[mid][a]; if (!w) return ''; return ['neck', 'face', 'head'].map(s => w[s] && ACC[w[s]] ? ACC[w[s]].svg : '').join(''); };
+const face = (a, mid) => `<svg viewBox="0 0 64 64" aria-hidden="true">${(ART[a] || ART.chick).svg}${typeof mid === 'string' ? accSvg(mid, a) : ''}</svg>`;
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#f06f93" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7"/></svg>';
 
 /* ---------- 처음 들어 있는 예시 ---------- */
@@ -90,7 +91,7 @@ let sel = today, tab = 'todo', editing = null, draft = null, me = ls.get('hh-me'
 const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const mem = id => S.members.find(m => m.id === id);
 const art = m => ART[m && m.a] || ART.chick;
-function normalize(d) { d.done = d.done || {}; d.redeemed = d.redeemed || []; d.members = d.members || []; d.chores = d.chores || []; d.rewards = d.rewards || []; d.deals = d.deals || {}; d.games = d.games || {}; d.adopt = d.adopt || {}; d.buys = d.buys || {}; d.homes = d.homes || {}; return d; }
+function normalize(d) { d.done = d.done || {}; d.redeemed = d.redeemed || []; d.members = d.members || []; d.chores = d.chores || []; d.rewards = d.rewards || []; d.deals = d.deals || {}; d.games = d.games || {}; d.adopt = d.adopt || {}; d.buys = d.buys || {}; d.homes = d.homes || {}; d.wear = d.wear || {}; return d; }
 /* 원래 순번대로 맡은 사람 */
 function baseWho(ch, k) { const ids = ch.who.filter(mem); if (!ids.length) return null; if (ch.mode === 'fixed') return ids[0];
   const i = (ch.mode === 'day' ? dayNum(k) : weekNum(k)) + (ch.off || 0); return ids[((i % ids.length) + ids.length) % ids.length]; }
@@ -139,13 +140,13 @@ function vTodo() {
   const open = Object.values(S.deals).filter(d => d.st === 'open' && d.k >= today).sort((x, y) => x.k < y.k ? -1 : 1);
   const market = open.length ? `<section class="market"><h3>용돈 걸린 일 ${open.length}개</h3>${open.map(d => `<div class="mrow2"><span><b>${won(d.amt)}</b> · ${esc(d.name)}<small>${md(d.k)} ${DN[wd(d.k)]} · ${nm(d.from)}의 일</small></span>${me && me !== d.from ? `<button class="mini" data-take="${d.id}">내가 할게요</button>` : me === d.from ? `<button class="mini ghost" data-xcancel="${d.id}">부탁 취소</button>` : ''}</div>`).join('')}</section>` : '';
   const group = (m, list, title) => { const A = m ? art(m) : { c: '#f3e3e3', cD: '#c9b6bc' };
-    return `<section class="who${m && m.id === me ? ' mine' : ''}" style="--c:${A.c};--cD:${A.cD}"><header><span class="av">${m ? face(m.a) : '<svg viewBox="0 0 64 64"><text x="32" y="44" text-anchor="middle" font-size="34" font-family="Jua" fill="#8a7a80">?</text></svg>'}</span><h3>${title}${m && m.id === me ? ' <em>나</em>' : ''}</h3><span class="tally">${list.filter(c => rec(sel, c.id)).length} / ${list.length}</span></header><div class="list">${list.length ? list.map(c => item(c, m)).join('') : '<p class="none">오늘은 쉬는 날이에요</p>'}</div></section>`; };
+    return `<section class="who${m && m.id === me ? ' mine' : ''}" style="--c:${A.c};--cD:${A.cD}"><header><span class="av">${m ? face(m.a, m.id) : '<svg viewBox="0 0 64 64"><text x="32" y="44" text-anchor="middle" font-size="34" font-family="Jua" fill="#8a7a80">?</text></svg>'}</span><h3>${title}${m && m.id === me ? ' <em>나</em>' : ''}</h3><span class="tally">${list.filter(c => rec(sel, c.id)).length} / ${list.length}</span></header><div class="list">${list.length ? list.map(c => item(c, m)).join('') : '<p class="none">오늘은 쉬는 날이에요</p>'}</div></section>`; };
   const ms = [...S.members].sort((a, b) => (b.id === me) - (a.id === me));
   const anyone = cs.filter(c => !who(c, sel));
   const all = cs.length && !left;
   return `<div class="wk"><button data-wk="-7" aria-label="지난주">‹</button><div class="strip">${strip}</div><button data-wk="7" aria-label="다음 주">›</button></div>
   <div class="meter"><div class="big"><b>${done.length}</b><span> / ${cs.length}</span></div><div><p>${sel === today ? '오늘 우리 가족' : label(sel)}</p><div class="bar">${segs}</div><p class="sub">${!cs.length ? '할 일이 없는 날이에요.' : left ? `${left}개 남았어요. 같이 끝내 봐요!` : '모두 끝! 오늘도 팀워크 최고예요.'}</p></div></div>
-  ${all ? `<div class="party">${S.members.map(m => face(m.a)).join('')}</div>` : ''}
+  ${all ? `<div class="party">${S.members.map(m => face(m.a, m.id)).join('')}</div>` : ''}
   ${me ? '' : '<p class="hint">위에서 ‘나는 누구?’를 고르면 내 할 일이 맨 위로 오고, 다른 가족 일을 대신 하면 내 점수가 돼요.</p>'}
   ${market}
   <div class="grid">${anyone.length ? group(null, anyone, '먼저 하는 사람') : ''}${ms.map(m => group(m, cs.filter(c => who(c, sel) === m.id), esc(m.name))).join('')}</div>`;
@@ -157,8 +158,8 @@ function vScore() {
   const mm = mem(me), mb = mm ? bal(me) : 0;
   const log = S.redeemed.slice(-8).reverse().map(r => { const m = mem(r.m);
     return `<li><span><b>${esc(m ? m.name : '?')}</b> · ${esc(r.r)} (${r.c}점)</span><time>${parse(r.d).getMonth() + 1}/${parse(r.d).getDate()}</time><button class="link" data-undor="${r.id}">취소</button></li>`; }).join('');
-  return `<h2 style="margin-top:8px">이번 주 누가 얼마나 했나</h2><div class="rows">${rows.map(r => `<div class="lb">${face(r.m.a)}<span>${esc(r.m.name)}</span><div class="track"><span style="width:${r.w / max * 100}%;background:${art(r.m).cD}"></span></div><span class="n">${r.w}점</span></div>`).join('')}</div>
-  <h2>쓸 수 있는 점수</h2><div class="bal">${S.members.map(m => `<div style="--c:${art(m).c}">${face(m.a)}<small>${esc(m.name)}</small><b>${bal(m.id)}점</b></div>`).join('')}</div>
+  return `<h2 style="margin-top:8px">이번 주 누가 얼마나 했나</h2><div class="rows">${rows.map(r => `<div class="lb">${face(r.m.a, r.m.id)}<span>${esc(r.m.name)}</span><div class="track"><span style="width:${r.w / max * 100}%;background:${art(r.m).cD}"></span></div><span class="n">${r.w}점</span></div>`).join('')}</div>
+  <h2>쓸 수 있는 점수</h2><div class="bal">${S.members.map(m => `<div style="--c:${art(m).c}">${face(m.a, m.id)}<small>${esc(m.name)}</small><b>${bal(m.id)}점</b></div>`).join('')}</div>
   <h2>보상 바꾸기</h2><p class="hint">${mm ? `${esc(mm.name)}의 점수 ${mb}점으로 바꿀 수 있어요.` : '위에서 ‘나는 누구?’를 먼저 골라 주세요.'}</p>
   <div class="rows">${S.rewards.map(r => `<div class="rw"><span class="cn">${esc(r.name)}<small>${r.cost}점</small></span><button class="btn" data-redeem="${r.id}"${!mm || mb < r.cost ? ' disabled' : ''}>바꾸기</button></div>`).join('') || '<p class="none">‘관리’에서 보상을 추가해 주세요.</p>'}</div>
   ${log ? `<h2>최근 바꾼 보상</h2><ul class="log">${log}</ul>` : ''}
@@ -190,7 +191,7 @@ function vPlay() {
   const res = last ? `<div class="result ${last.net > 0 ? 'win' : 'lose'}">${last.g === 'coin' ? `<div class="coin">${last.face === 'h' ? '앞' : '뒤'}</div>` : dieFace(last.face)}<p>${last.net > 0 ? `맞혔어요! +${last.net}점` : `아쉬워요. ${last.net}점`}</p></div>` : '';
   const gameBox = !mm ? '<p class="hint">위에서 ‘나는 누구?’를 먼저 골라 주세요.</p>' : `
   <div class="playcard">
-    <div class="pbal">${face(mm.a)}<div><small>${esc(mm.name)}의 점수</small><b>${b}점</b></div><span class="left">오늘 ${left}판 남음</span></div>
+    <div class="pbal">${face(mm.a, mm.id)}<div><small>${esc(mm.name)}의 점수</small><b>${b}점</b></div><span class="left">오늘 ${left}판 남음</span></div>
     <div class="field"><span>게임</span><div class="tg"><button data-game="coin" aria-pressed="${game === 'coin'}">동전 던지기 · 맞히면 2배</button><button data-game="dice" aria-pressed="${game === 'dice'}">주사위 · 맞히면 6배</button></div></div>
     <div class="field"><span>${game === 'coin' ? '어느 쪽이 나올까요?' : '어떤 숫자가 나올까요?'}</span><div class="tg">${game === 'coin' ? [['h', '앞'], ['t', '뒤']].map(([v, t]) => `<button data-cpick="${v}" aria-pressed="${coinPick === v}">${t}</button>`).join('') : [1, 2, 3, 4, 5, 6].map(n => `<button data-dpick="${n}" aria-pressed="${dicePick === n}">${n}</button>`).join('')}</div></div>
     <div class="field"><label for="ba">걸 점수</label><div class="tg">${[5, 10, 20, 50].map(v => `<button data-bet="${v}" aria-pressed="${bet === v}"${v > b ? ' disabled' : ''}>${v}점</button>`).join('')}<button data-bet="${Math.floor(b / 2)}"${b < 2 ? ' disabled' : ''}>절반</button></div><input type="number" id="ba" min="1" max="${b}" inputmode="numeric" value="${bet}"></div>
@@ -243,6 +244,41 @@ const FURN = {
   clock: { name: '벽시계', price: 12, w: 11, wall: true, svg: `<circle cx="32" cy="32" r="22" fill="#fff" stroke="#f06f93" stroke-width="5"/><path d="M32 32V18M32 32l9 6" stroke="#3b2f35" stroke-width="3" stroke-linecap="round"/>` },
   window: { name: '창문', price: 20, w: 18, wall: true, svg: `<rect x="8" y="6" width="48" height="46" rx="4" fill="#fff"/><rect x="12" y="10" width="40" height="38" fill="#bfe6ff"/><path d="M32 10v38M12 29h40" stroke="#fff" stroke-width="3"/><circle cx="21" cy="19" r="4" fill="#fff"/>` }
 };
+
+Object.assign(FURN, {
+  chair: { name: '의자', price: 12, w: 14, svg: `<rect x="18" y="6" width="28" height="26" rx="4" fill="#c98f6b"/><rect x="14" y="32" width="36" height="7" rx="3" fill="#a06f4f"/><rect x="16" y="39" width="4" height="18" fill="#a06f4f"/><rect x="44" y="39" width="4" height="18" fill="#a06f4f"/>` },
+  desk: { name: '책상', price: 22, w: 24, svg: `<rect x="4" y="22" width="56" height="6" rx="2" fill="#e0b48a"/><rect x="6" y="28" width="20" height="28" fill="#d6a679"/><rect x="9" y="33" width="14" height="8" rx="2" fill="#c89466"/><rect x="54" y="28" width="4" height="28" fill="#c89466"/><rect x="34" y="10" width="16" height="12" rx="2" fill="#7cc0e8"/><rect x="40" y="22" width="4" height="0.1" fill="#7cc0e8"/>` },
+  cactus: { name: '선인장', price: 8, w: 11, svg: `<path d="M27 12a5 5 0 0 1 10 0v24h-10z" fill="#6cc08b"/><path d="M27 26h-6a4 4 0 0 1-4-4v-6a3 3 0 0 1 6 0v4h4zM37 30h5v-6a3 3 0 0 1 6 0v6a4 4 0 0 1-4 4h-7z" fill="#6cc08b"/><path d="M20 36h24l-3 20H23z" fill="#e08a5a"/><circle cx="32" cy="9" r="2.5" fill="#ff8fb1"/>` },
+  cake: { name: '케이크', price: 10, w: 12, svg: `<ellipse cx="32" cy="54" rx="22" ry="3" fill="#e9dde1"/><rect x="14" y="30" width="36" height="22" rx="4" fill="#ffe1ea"/><path d="M14 38q4 4 9 0t9 0 9 0 9 0" stroke="#ff9fba" stroke-width="3" fill="none"/><rect x="30" y="18" width="4" height="12" fill="#7cc0e8"/><path d="M32 11q3 4 0 7q-3-3 0-7z" fill="#ffb13a"/>` },
+  toybox: { name: '장난감 상자', price: 15, w: 18, svg: `<circle cx="20" cy="17" r="6" fill="#f06f93"/><rect x="34" y="10" width="10" height="10" rx="2" fill="#7cc0e8"/><rect x="8" y="26" width="48" height="30" rx="4" fill="#ffd84a"/><rect x="6" y="20" width="52" height="8" rx="3" fill="#f2b93b"/><path d="M8 40h48" stroke="#f2b93b" stroke-width="3"/>` },
+  wardrobe: { name: '옷장', price: 30, w: 20, svg: `<rect x="10" y="4" width="44" height="54" rx="4" fill="#c98f6b"/><path d="M32 6v50" stroke="#a06f4f" stroke-width="2"/><circle cx="29" cy="32" r="1.8" fill="#ffd84a"/><circle cx="35" cy="32" r="1.8" fill="#ffd84a"/><rect x="12" y="58" width="4" height="4" fill="#a06f4f"/><rect x="48" y="58" width="4" height="4" fill="#a06f4f"/>` },
+  fridge: { name: '냉장고', price: 35, w: 16, svg: `<rect x="16" y="2" width="32" height="58" rx="5" fill="#dff3ea"/><path d="M16 22h32" stroke="#b6dccb" stroke-width="2"/><rect x="40" y="8" width="3" height="9" rx="1.5" fill="#9cc8b5"/><rect x="40" y="27" width="3" height="12" rx="1.5" fill="#9cc8b5"/><circle cx="26" cy="12" r="3" fill="#f06f93"/><rect x="22" y="30" width="8" height="6" rx="1" fill="#ffd84a"/>` },
+  bathtub: { name: '욕조', price: 40, w: 30, svg: `<g fill="#bfe6ff"><circle cx="18" cy="28" r="6"/><circle cx="28" cy="25" r="7"/><circle cx="40" cy="27" r="6"/><circle cx="49" cy="29" r="5"/></g><path d="M4 30h56v6q0 16-16 16H20Q4 52 4 36z" fill="#fff" stroke="#d5e7f3" stroke-width="2"/><rect x="10" y="52" width="4" height="6" fill="#c9d6df"/><rect x="50" y="52" width="4" height="6" fill="#c9d6df"/>` },
+  piano: { name: '피아노', price: 45, w: 28, svg: `<rect x="6" y="8" width="52" height="34" rx="4" fill="#3b2f35"/><rect x="6" y="34" width="52" height="10" fill="#fff"/><g fill="#3b2f35"><rect x="12" y="34" width="3" height="6"/><rect x="20" y="34" width="3" height="6"/><rect x="31" y="34" width="3" height="6"/><rect x="39" y="34" width="3" height="6"/><rect x="47" y="34" width="3" height="6"/></g><rect x="10" y="44" width="4" height="13" fill="#3b2f35"/><rect x="50" y="44" width="4" height="13" fill="#3b2f35"/>` },
+  fireplace: { name: '벽난로', price: 50, w: 28, svg: `<rect x="6" y="14" width="52" height="44" rx="3" fill="#d98a6a"/><rect x="2" y="10" width="60" height="7" rx="2" fill="#a86a50"/><rect x="16" y="28" width="32" height="30" rx="14" fill="#3b2f35"/><path d="M32 36q8 8 4 16h-8q-4-8 4-16z" fill="#ffb13a"/><path d="M32 43q4 4 2 9h-4q-2-5 2-9z" fill="#ffe08a"/>` },
+  tree: { name: '반짝 트리', price: 30, w: 20, svg: `<path d="M32 4l14 20h-6l10 14h-7l9 12H12l9-12h-7l10-14h-6z" fill="#4fae6b"/><rect x="28" y="50" width="8" height="8" fill="#a06f4f"/><path d="M32 1l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6z" fill="#ffd45e"/><circle cx="26" cy="28" r="2.5" fill="#f06f93"/><circle cx="38" cy="38" r="2.5" fill="#7cc0e8"/><circle cx="24" cy="44" r="2.5" fill="#ffd84a"/>` },
+  curtain: { name: '커튼', price: 18, w: 22, wall: true, svg: `<rect x="4" y="4" width="56" height="5" rx="2" fill="#a06f4f"/><path d="M6 8h20q-4 22 2 46H6z" fill="#f59ab3"/><path d="M58 8H38q4 22-2 46h22z" fill="#f59ab3"/>` },
+  wallshelf: { name: '벽선반', price: 12, w: 18, wall: true, svg: `<path d="M14 40V28h8v12z" fill="#7cc0e8"/><circle cx="34" cy="33" r="6" fill="#6cc08b"/><rect x="30" y="37" width="8" height="3" fill="#e08a5a"/><rect x="44" y="26" width="8" height="14" rx="2" fill="#ffd84a"/><rect x="6" y="40" width="52" height="5" rx="2" fill="#c98f6b"/><path d="M12 45l4 6M52 45l-4 6" stroke="#a06f4f" stroke-width="3"/>` },
+  garland: { name: '가랜드', price: 10, w: 24, wall: true, svg: `<path d="M4 10q28 16 56 0" stroke="#c9b6bc" stroke-width="2" fill="none"/><path d="M10 13l4 12 4-11z" fill="#f06f93"/><path d="M22 16l4 12 4-11z" fill="#ffd84a"/><path d="M34 17l4 12 4-11z" fill="#7cc0e8"/><path d="M46 14l4 12 4-11z" fill="#6cc08b"/>` }
+});
+/* 동물 장신구: 머리 · 얼굴 · 목 한 개씩 */
+const ACC = {
+  bow: { name: '리본', price: 10, slot: 'head', svg: `<g transform="translate(47 13)"><path d="M0 0l-9-6v12zM0 0l9-6v12z" fill="#ff7aa2"/><circle r="3" fill="#ff5c8d"/></g>` },
+  flower: { name: '꽃핀', price: 10, slot: 'head', svg: `<g transform="translate(17 13)" fill="#ffd84a"><circle cx="0" cy="-4" r="3.4"/><circle cx="3.8" cy="-1.2" r="3.4"/><circle cx="2.4" cy="3.2" r="3.4"/><circle cx="-2.4" cy="3.2" r="3.4"/><circle cx="-3.8" cy="-1.2" r="3.4"/><circle r="2.6" fill="#ff8fb1"/></g>` },
+  heartpin: { name: '하트 핀', price: 8, slot: 'head', svg: `<path d="M47 16s-6-3.6-6-7.6a3.3 3.3 0 0 1 6-1.8a3.3 3.3 0 0 1 6 1.8c0 4-6 7.6-6 7.6z" fill="#ff5c8d"/>` },
+  partyhat: { name: '고깔모자', price: 15, slot: 'head', svg: `<path d="M32 2l10 18H22z" fill="#7cc0e8"/><path d="M27.5 10h9M25 15h14" stroke="#fff" stroke-width="2.5"/><circle cx="32" cy="3" r="3" fill="#ffd84a"/>` },
+  strawhat: { name: '밀짚모자', price: 20, slot: 'head', svg: `<ellipse cx="32" cy="16" rx="25" ry="5.5" fill="#f2cf7a"/><path d="M19 16q1-13 13-13t13 13z" fill="#f7dc94"/><path d="M19.6 12.5h24.8" stroke="#f06f93" stroke-width="3"/>` },
+  beanie: { name: '털모자', price: 20, slot: 'head', svg: `<path d="M12 22q0-18 20-18t20 18z" fill="#8fd0f2"/><rect x="11" y="18" width="42" height="7" rx="3.5" fill="#5aa9d8"/><circle cx="32" cy="4.5" r="4" fill="#fff"/>` },
+  headphones: { name: '헤드폰', price: 30, slot: 'head', svg: `<path d="M10 34q0-25 22-25t22 25" stroke="#5b4a52" stroke-width="4" fill="none"/><rect x="5" y="28" width="9" height="15" rx="4.5" fill="#f06f93"/><rect x="50" y="28" width="9" height="15" rx="4.5" fill="#f06f93"/>` },
+  crown: { name: '왕관', price: 40, slot: 'head', svg: `<path d="M18 17l2.5-12 6.5 7 5-9 5 9 6.5-7 2.5 12z" fill="#ffd45e" stroke="#e8b923" stroke-width="1.5" stroke-linejoin="round"/><circle cx="32" cy="12.5" r="2.2" fill="#f06f93"/>` },
+  glasses: { name: '동그란 안경', price: 15, slot: 'face', svg: `<g fill="rgba(255,255,255,.18)" stroke="#3b2f35" stroke-width="2.2"><circle cx="23" cy="33" r="7"/><circle cx="41" cy="33" r="7"/></g><path d="M30 33h4" stroke="#3b2f35" stroke-width="2.2"/>` },
+  shades: { name: '선글라스', price: 25, slot: 'face', svg: `<rect x="14" y="28" width="16" height="10" rx="5" fill="#3b2f35"/><rect x="34" y="28" width="16" height="10" rx="5" fill="#3b2f35"/><path d="M30 31h4" stroke="#3b2f35" stroke-width="2.5"/><path d="M17.5 31.5l4.5-1.5M37.5 31.5l4.5-1.5" stroke="#fff" stroke-width="1.6" opacity=".6" stroke-linecap="round"/>` },
+  bowtie: { name: '나비넥타이', price: 12, slot: 'neck', svg: `<g transform="translate(32 59)"><path d="M0 0l-9-5v10zM0 0l9-5v10z" fill="#f06f93"/><circle r="2.6" fill="#d94f78"/></g>` },
+  scarf: { name: '목도리', price: 18, slot: 'neck', svg: `<path d="M12 53q20 10 40 0v6q-20 9-40 0z" fill="#e8453c"/><rect x="40" y="55" width="7" height="9" rx="2" fill="#c93a32"/>` },
+  pearls: { name: '진주 목걸이', price: 20, slot: 'neck', svg: `<g fill="#fffaf0" stroke="#e7dccb" stroke-width=".8">${[[16, 55], [21, 58], [26.5, 60], [32, 61], [37.5, 60], [43, 58], [48, 55]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="2.6"/>`).join('')}</g>` }
+};
+const SLOT = { head: '머리', face: '얼굴', neck: '목' };
+let dressPet = null;
 const icon = s => `<svg viewBox="0 0 64 64" aria-hidden="true">${s}</svg>`;
 let viewHome = null, homeEdit = false, selItem = null, shopTab = 'furn', drag = null;
 const homeOf = id => Object.assign({ house: 'room', wall: 'plain', floor: 'wood', place: {} }, (S.homes || {})[id] || {});
@@ -259,7 +295,7 @@ function roomHtml(m) {
   ].sort((p, q) => (p.f && p.f.flat ? -1 : 0) - (q.f && q.f.flat ? -1 : 0) || p.p.y - q.p.y);
   return `<div class="house" data-h="${h.house}"><div class="roof"></div><div class="room${edit ? ' edit' : ''}" id="room">
     <div class="wallp" style="background:${WALLS[h.wall].bg}"></div><div class="floorp" style="background:${FLOORS[h.floor].bg}"></div>
-    ${els.map(e => `<div class="it${e.f && e.f.flat ? ' flat' : ''}${selItem === e.id && edit ? ' sel' : ''}" data-it="${e.id}" style="left:${e.p.x}%;top:${e.p.y}%;width:${e.pet ? 16 : e.f.w}%">${e.pet ? face(e.pet) : icon(e.f.svg)}</div>`).join('')}
+    ${els.map(e => `<div class="it${e.f && e.f.flat ? ' flat' : ''}${selItem === e.id && edit ? ' sel' : ''}" data-it="${e.id}" style="left:${e.p.x}%;top:${e.p.y}%;width:${e.pet ? 16 : e.f.w}%">${e.pet ? face(e.pet, m.id) : icon(e.f.svg)}</div>`).join('')}
   </div></div>`;
 }
 function vHome() {
@@ -268,7 +304,7 @@ function vHome() {
   const m = mem(viewHome), own = m.id === me, h = homeOf(m.id), cap = HOUSES[h.house].cap;
   const placed = myBuys(m.id, 'item').filter(x => h.place[x.id]).length;
   const tray = own ? myBuys(me, 'item').filter(x => !h.place[x.id] && FURN[x.k]) : [];
-  const switcher = `<div class="tg homes">${S.members.map(x => `<button data-vh="${x.id}" aria-pressed="${x.id === m.id}" style="--c:${art(x).c};--cD:${art(x).cD}">${face(x.a)}${esc(x.name)}네</button>`).join('')}</div>`;
+  const switcher = `<div class="tg homes">${S.members.map(x => `<button data-vh="${x.id}" aria-pressed="${x.id === m.id}" style="--c:${art(x).c};--cD:${art(x).cD}">${face(x.a, x.id)}${esc(x.name)}네</button>`).join('')}</div>`;
   const ctrl = own ? `<div class="acts homeacts"><button class="btn${homeEdit ? '' : ' ghost'}" data-hedit>${homeEdit ? '꾸미기 끝' : '꾸미기'}</button>${homeEdit && selItem ? `<button class="btn warn" data-unplace>${selItem.startsWith('pet_') ? '원래 자리로' : '넣어 두기'}</button>` : ''}<span class="capn">가구 ${placed} / ${cap}</span></div>
     ${homeEdit ? `<p class="hint">가구와 동물을 끌어서 옮겨요. 눌러서 고른 다음 ‘넣어 두기’를 누르면 창고로 들어가요.</p>
     <div class="tray">${tray.length ? tray.map(x => `<button data-place="${x.id}" title="${FURN[x.k].name}">${icon(FURN[x.k].svg)}<small>${FURN[x.k].name}</small></button>`).join('') : '<p class="none">창고가 비었어요. 아래 가게에서 가구를 사 보세요.</p>'}</div>` : ''}` : `<p class="hint">${esc(m.name)}네 집은 구경만 할 수 있어요. 꾸미기는 ${esc(m.name)}만 할 수 있어요.</p>`;
@@ -277,14 +313,22 @@ function vHome() {
     const b = bal(me), btn = (kind, k, price, ownd, using, label) => ownd
       ? `<button class="mini ghost" data-use="${kind}:${k}"${using ? ' disabled' : ''}>${using ? '사용 중' : label}</button>`
       : `<button class="mini" data-buy="${kind}:${k}"${b < price ? ' disabled' : ''}>${price ? price + '점' : '무료'}</button>`;
-    const tabs = [['furn', '가구'], ['wall', '벽지'], ['floor', '바닥'], ['house', '집']];
+    const tabs = [['furn', '가구'], ['acc', '장신구'], ['wall', '벽지'], ['floor', '바닥'], ['house', '집']];
     let cards = '';
     if (shopTab === 'furn') cards = Object.entries(FURN).map(([k, f]) => { const n = myBuys(me, 'item').filter(x => x.k === k).length;
       return `<div class="good">${icon(f.svg)}<b>${f.name}</b><small>${f.wall ? '벽에 거는 가구' : '바닥 가구'}${n ? ` · ${n}개 있음` : ''}</small><button class="mini" data-buy="item:${k}"${b < f.price ? ' disabled' : ''}>${f.price}점</button></div>`; }).join('');
+    if (shopTab === 'acc') cards = Object.entries(ACC).map(([k, x]) => { const ownd = hasBuy(me, 'acc', k);
+      return `<div class="good">${icon((ART[mm.a] || ART.chick).svg + x.svg)}<b>${x.name}</b><small>${SLOT[x.slot]} 장신구</small>${ownd ? '<button class="mini ghost" disabled>가지고 있어요</button>' : `<button class="mini" data-buy="acc:${k}"${b < x.price ? ' disabled' : ''}>${x.price}점</button>`}</div>`; }).join('');
     if (shopTab === 'wall') cards = Object.entries(WALLS).map(([k, w]) => `<div class="good"><span class="sw" style="background:${w.bg}"></span><b>${w.name}</b><small>벽지</small>${btn('wall', k, w.price, !w.price || hasBuy(me, 'wall', k), h.wall === k, '바르기')}</div>`).join('');
     if (shopTab === 'floor') cards = Object.entries(FLOORS).map(([k, f]) => `<div class="good"><span class="sw" style="background:${f.bg}"></span><b>${f.name}</b><small>바닥</small>${btn('floor', k, f.price, !f.price || hasBuy(me, 'floor', k), h.floor === k, '깔기')}</div>`).join('');
     if (shopTab === 'house') cards = Object.entries(HOUSES).map(([k, x]) => `<div class="good"><span class="hsw" data-h="${k}"><i></i></span><b>${x.name}</b><small>가구 ${x.cap}개까지</small>${btn('house', k, x.price, !x.price || hasBuy(me, 'house', k), h.house === k, '이사하기')}</div>`).join('');
-    shop = `<h2>가게</h2><p class="hint">${esc(mm.name)}의 점수 ${b}점</p><div class="tg shoptabs">${tabs.map(([v, t]) => `<button data-stab="${v}" aria-pressed="${shopTab === v}">${t}</button>`).join('')}</div><div class="goods">${cards}</div>`;
+    const pets = petsOf(mm); if (!dressPet || !pets.includes(dressPet)) dressPet = mm.a;
+    const w = ((S.wear[me] || {})[dressPet]) || {}, mine = myBuys(me, 'acc').map(x => x.k).filter(k => ACC[k]);
+    const dress = `<h2>동물 꾸미기</h2><div class="dress"><div class="dview">${face(dressPet, me)}</div><div class="dside">
+      <div class="tg">${pets.map(k => `<button class="petpick" data-dress="${k}" aria-pressed="${dressPet === k}" aria-label="${ART[k].name}">${face(k, me)}</button>`).join('')}</div>
+      ${mine.length ? Object.keys(SLOT).map(s => { const list = mine.filter(k => ACC[k].slot === s); return list.length ? `<div class="field"><span>${SLOT[s]}</span><div class="tg">${list.map(k => `<button data-wear="${s}:${k}" aria-pressed="${w[s] === k}">${ACC[k].name}</button>`).join('')}</div></div>` : ''; }).join('') : '<p class="hint">아래 가게의 ‘장신구’에서 모자나 리본을 사면 여기서 씌울 수 있어요.</p>'}
+      <p class="hint">머리, 얼굴, 목에 하나씩 쓸 수 있어요. 한 번 더 누르면 벗어요.</p></div></div>`;
+    shop = dress + `<h2>가게</h2><p class="hint">${esc(mm.name)}의 점수 ${b}점</p><div class="tg shoptabs">${tabs.map(([v, t]) => `<button data-stab="${v}" aria-pressed="${shopTab === v}">${t}</button>`).join('')}</div><div class="goods">${cards}</div>`;
   }
   return `<h2 style="margin-top:8px">${esc(m.name)}네 집 · ${HOUSES[h.house].name}</h2>${switcher}${roomHtml(m)}${ctrl}${!me ? '<p class="hint">위에서 ‘나는 누구?’를 고르면 내 집을 꾸밀 수 있어요.</p>' : ''}${shop}`;
 }
@@ -304,8 +348,8 @@ function vManage() {
   const sum = c => { const days = c.days.length === 7 ? '매일' : [...c.days].sort().map(i => DN[i]).join('·'); const ms = c.who.map(mem).filter(Boolean);
     return days + ' · ' + (c.mode === 'fixed' ? (ms[0] ? esc(ms[0].name) : '먼저 하는 사람') : (c.mode === 'day' ? '날마다' : '주마다') + ' 순번') + ' · ' + c.pts + '점'; };
   const code = ls.get('hh-family');
-  return `<h2 style="margin-top:8px">가족과 캐릭터</h2><p class="hint">이름과 캐릭터는 자기 것만 바꿀 수 있어요.</p>${S.members.map(m => m.id === me ? `<div class="mrow"><input type="text" data-name="${m.id}" value="${esc(m.name)}" maxlength="10" aria-label="내 이름"><div class="pick">${[...AKEYS, ...SHOP.filter(k => owns(m.id, k))].map(k => `<button data-ava="${m.id}:${k}" aria-pressed="${m.a === k}" aria-label="${ART[k].name}">${face(k)}</button>`).join('')}</div><button class="btn ghost" data-repin>비밀번호 바꾸기</button></div>` : `<div class="mrow other"><span class="av" style="--c:${art(m).c}">${face(m.a)}</span><b>${esc(m.name)}</b></div>`).join('')}
-  <h2>집안일</h2>${S.chores.map(c => editing === c.id ? choreForm() : `<div class="crow"><span class="cn">${esc(c.name)}<small>${sum(c)}</small></span><span class="dots">${c.who.map(mem).filter(Boolean).map(m => face(m.a)).join('')}</span><button class="btn ghost" data-edit="${c.id}">편집</button></div>`).join('')}
+  return `<h2 style="margin-top:8px">가족과 캐릭터</h2><p class="hint">이름과 캐릭터는 자기 것만 바꿀 수 있어요.</p>${S.members.map(m => m.id === me ? `<div class="mrow"><input type="text" data-name="${m.id}" value="${esc(m.name)}" maxlength="10" aria-label="내 이름"><div class="pick">${[...AKEYS, ...SHOP.filter(k => owns(m.id, k))].map(k => `<button data-ava="${m.id}:${k}" aria-pressed="${m.a === k}" aria-label="${ART[k].name}">${face(k)}</button>`).join('')}</div><button class="btn ghost" data-repin>비밀번호 바꾸기</button></div>` : `<div class="mrow other"><span class="av" style="--c:${art(m).c}">${face(m.a, m.id)}</span><b>${esc(m.name)}</b></div>`).join('')}
+  <h2>집안일</h2>${S.chores.map(c => editing === c.id ? choreForm() : `<div class="crow"><span class="cn">${esc(c.name)}<small>${sum(c)}</small></span><span class="dots">${c.who.map(mem).filter(Boolean).map(m => face(m.a, m.id)).join('')}</span><button class="btn ghost" data-edit="${c.id}">편집</button></div>`).join('')}
   ${editing === 'new' ? choreForm() : '<p><button class="btn" data-add>+ 집안일 추가</button></p>'}
   <h2>보상</h2><div class="rows">${S.rewards.map(r => `<div class="rw"><span class="cn">${esc(r.name)}<small>${r.cost}점</small></span><button class="btn warn" data-rdel="${r.id}">삭제</button></div>`).join('')}</div>
   <div class="radd"><input type="text" id="rn" placeholder="새 보상 (예: 치킨 메뉴 정하기)" aria-label="보상 이름"><input type="number" id="rc" min="1" value="30" inputmode="numeric" aria-label="필요한 점수"><button class="btn" data-radd>추가</button></div>
@@ -320,9 +364,9 @@ function render() {
   pending = false;
   const now = keyOf(new Date()); if (now !== today) { if (sel === today) sel = now; today = now; }
   $('#date').textContent = label(today);
-  $('#peek').innerHTML = S.members.slice(0, 5).map(m => face(m.a)).join('');
+  $('#peek').innerHTML = S.members.slice(0, 5).map(m => face(m.a, m.id)).join('');
   document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', b.dataset.t === tab ? 'page' : 'false'));
-  $('#me').innerHTML = S.members.map(m => `<button class="chip" data-me="${m.id}" style="--c:${art(m).c}" aria-pressed="${m.id === me}">${face(m.a)}${esc(m.name)}</button>`).join('');
+  $('#me').innerHTML = S.members.map(m => `<button class="chip" data-me="${m.id}" style="--c:${art(m).c}" aria-pressed="${m.id === me}">${face(m.a, m.id)}${esc(m.name)}</button>`).join('');
   $('#view').innerHTML = tab === 'score' ? vScore() : tab === 'manage' ? vManage() : tab === 'play' ? vPlay() : tab === 'home' ? vHome() : vTodo();
 }
 document.addEventListener('focusout', () => setTimeout(() => { if (pending) render(); }, 0));
@@ -339,7 +383,7 @@ const setOk = id => { const l = okList(); if (!l.includes(id)) l.push(id); ls.se
 let pinFor = null, pinMode = 'enter';
 function openPin(id, mode) {
   const m = mem(id); pinFor = id; pinMode = mode || (m.pin ? 'enter' : 'set');
-  $('#pinFace').innerHTML = face(m.a);
+  $('#pinFace').innerHTML = face(m.a, m.id);
   $('#pinTitle').textContent = pinMode === 'set' ? `${m.name}의 비밀번호 정하기` : `${m.name} 맞나요?`;
   $('#pinSub').textContent = pinMode === 'set' ? '숫자 4자리를 정해 주세요. 이 번호를 아는 사람만 이 이름으로 체크하고 꾸밀 수 있어요.' : '비밀번호 4자리를 넣어 주세요.';
   $('#pinMsg').textContent = ''; $('#pinIn').value = ''; $('#pin').hidden = false; setTimeout(() => $('#pinIn').focus(), 50);
@@ -386,18 +430,26 @@ document.addEventListener('click', e => {
   }
 
 
+
+  if (d.dress) { dressPet = d.dress; render(); return; }
+  if (d.wear) {
+    const [slot, k] = d.wear.split(':'), p = dressPet; if (!me || !p || !hasBuy(me, 'acc', k)) return;
+    const cur = ((S.wear[me] || {})[p] || {})[slot], v = cur === k ? null : k;
+    change(() => { S.wear[me] = S.wear[me] || {}; S.wear[me][p] = S.wear[me][p] || {}; if (v) S.wear[me][p][slot] = v; else delete S.wear[me][p][slot]; },
+      R => [new R.FieldPath('wear', me, p, slot), v ? v : R.deleteField()]); return;
+  }
   if (d.vh) { viewHome = d.vh; homeEdit = false; selItem = null; render(); return; }
   if ('hedit' in d) { if (viewHome !== me) return; homeEdit = !homeEdit; selItem = null; render(); return; }
   if (d.stab) { shopTab = d.stab; render(); return; }
   if (d.buy) {
-    const [kind, k] = d.buy.split(':'), cat = { item: FURN, wall: WALLS, floor: FLOORS, house: HOUSES }[kind][k];
+    const [kind, k] = d.buy.split(':'), cat = { item: FURN, acc: ACC, wall: WALLS, floor: FLOORS, house: HOUSES }[kind][k];
     if (!me || bal(me) < cat.price) return;
     if (!b.dataset.arm) { b.dataset.arm = 1; b.textContent = '살까요?'; return; }
     const x = { id: 'b' + Date.now(), m: me, kind, k, cost: cat.price, t: Date.now() };
-    const apply = kind === 'item' ? null : kind;
+    const apply = ['wall', 'floor', 'house'].includes(kind) ? kind : null; if (kind === 'acc' && hasBuy(me, 'acc', k)) return;
     change(() => { S.buys[x.id] = x; if (apply) { S.homes[me] = homeOf(me); S.homes[me][apply] = k; } },
       R => [new R.FieldPath('buys', x.id), x, ...(apply ? [new R.FieldPath('homes', me, apply), k] : [])]);
-    toast(kind === 'item' ? `${cat.name}를 샀어요. ‘꾸미기’에서 놓아 보세요` : `${cat.name}로 바꿨어요`); return;
+    toast(kind === 'item' ? `${cat.name}를 샀어요. ‘꾸미기’에서 놓아 보세요` : kind === 'acc' ? `${cat.name}를 샀어요. ‘동물 꾸미기’에서 씌워 보세요` : `${cat.name}로 바꿨어요`); return;
   }
   if (d.use) { const [kind, k] = d.use.split(':'); if (!me) return;
     change(() => { S.homes[me] = homeOf(me); S.homes[me][kind] = k; }, R => [new R.FieldPath('homes', me, kind), k]); return; }
@@ -552,7 +604,7 @@ async function connect(code) {
 function listen() {
   R.onSnapshot(R.ref, snap => {
     if (!snap.exists()) return;
-    S = normalize(snap.data()); ls.set('hh-cache', JSON.stringify(S));
+    S = normalize(snap.data()); ls.set('hh-cache', JSON.stringify(S)); $('#sync').textContent = '가족 모두와 실시간으로 함께 저장돼요';
     if ($('#app').hidden) startApp('가족 모두와 실시간으로 함께 저장돼요'); else render();
   }, err => { console.error(err); toast('가족 판을 불러오지 못했어요'); });
 }

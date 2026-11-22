@@ -1,5 +1,5 @@
 // 오프라인에서도 앱이 열리도록 화면 파일을 저장해 두는 서비스 워커
-const VERSION = 'jipanil-v4';
+const VERSION = 'jipanil-v5';
 const SHELL = ['./', './index.html', './app.js', './config.js', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png'];
 
